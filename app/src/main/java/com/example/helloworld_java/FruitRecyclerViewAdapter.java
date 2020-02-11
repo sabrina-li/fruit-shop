@@ -2,6 +2,7 @@ package com.example.helloworld_java;
 
 import android.content.Context;
 import android.service.autofill.TextValueSanitizer;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -15,6 +16,10 @@ public class FruitRecyclerViewAdapter extends RecyclerView.Adapter<FruitRecycler
 
     public interface FruitAdapterOnClickHandler {
         void onClick(String fruit);
+    }
+
+    public FruitRecyclerViewAdapter(FruitAdapterOnClickHandler clickHander){
+        mClickHandler = clickHander;
     }
 
     public class FruitAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -37,6 +42,28 @@ public class FruitRecyclerViewAdapter extends RecyclerView.Adapter<FruitRecycler
     @Override
     public FruitAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){
         Context context = viewGroup.getContext();
+        int layoutForListItem = R.layout.fruit_list_item;
+        LayoutInflater inflater = LayoutInflater.from(context);
+        boolean shouldAttachToParentImmediately = false;
 
+        View view = inflater.inflate(layoutForListItem, viewGroup, shouldAttachToParentImmediately);
+        return new FruitAdapterViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(FruitAdapterViewHolder fruitAdapterViewHolder, int position){
+        String fruiteName = mFruitList[position];
+        fruitAdapterViewHolder.mFruitTextView.setText(fruiteName);
+    }
+
+    @Override
+    public int getItemCount(){
+        if (null == mFruitList) return 0;
+        return mFruitList.length;
+    }
+
+    public void setFruitList(String[] fruitList){
+        mFruitList = fruitList;
+        notifyDataSetChanged();
     }
 }
