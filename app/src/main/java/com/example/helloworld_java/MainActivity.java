@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements FruitRecyclerView
     }
 
     private void showFruitList(){
-        String urlStr = "http://reactshoppe.s3-website-us-east-1.amazonaws.com/data/products.json";
+        String urlStr = getString(R.string.aws_host);
         new FetchProductListTask().execute(urlStr);
 
     }
@@ -120,3 +120,4 @@ public class MainActivity extends AppCompatActivity implements FruitRecyclerView
 
     }
 }
+
