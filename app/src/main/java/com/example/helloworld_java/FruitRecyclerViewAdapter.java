@@ -9,9 +9,11 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 public class FruitRecyclerViewAdapter extends RecyclerView.Adapter<FruitRecyclerViewAdapter.FruitAdapterViewHolder> {
 
-    private String[] mFruitList;
+    private ArrayList<String>  mFruitList;
     private final FruitAdapterOnClickHandler mClickHandler;
 
     public interface FruitAdapterOnClickHandler {
@@ -34,7 +36,7 @@ public class FruitRecyclerViewAdapter extends RecyclerView.Adapter<FruitRecycler
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            String fruitName = mFruitList[adapterPosition];
+            String fruitName = mFruitList.get(adapterPosition);
             mClickHandler.onClick(fruitName);
         }
     }
@@ -52,17 +54,17 @@ public class FruitRecyclerViewAdapter extends RecyclerView.Adapter<FruitRecycler
 
     @Override
     public void onBindViewHolder(FruitAdapterViewHolder fruitAdapterViewHolder, int position){
-        String fruiteName = mFruitList[position];
+        String fruiteName = mFruitList.get(position);
         fruitAdapterViewHolder.mFruitTextView.setText(fruiteName);
     }
 
     @Override
     public int getItemCount(){
         if (null == mFruitList) return 0;
-        return mFruitList.length;
+        return mFruitList.size();
     }
 
-    public void setFruitList(String[] fruitList){
+    public void setFruitList(ArrayList<String> fruitList){
         mFruitList = fruitList;
         notifyDataSetChanged();
     }
