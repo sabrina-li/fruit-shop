@@ -26,17 +26,17 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-public class MainActivity extends AppCompatActivity implements FruitRecyclerViewAdapter.FruitAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements ProductRecyclerViewAdapter.FruitAdapterOnClickHandler {
 
     private RecyclerView mRecyclerView;
-    private FruitRecyclerViewAdapter mFruitRecyclerViewAdapter;
+    private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_fruit);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_product);
 
         LinearLayoutManager layoutManager
                 =new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements FruitRecyclerView
 
         mRecyclerView.setHasFixedSize(true);
 
-        mFruitRecyclerViewAdapter = new FruitRecyclerViewAdapter(this);
+        mFruitRecyclerViewAdapter = new ProductRecyclerViewAdapter(this);
         mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
 
         showFruitList();
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements FruitRecyclerView
                 .show();
     }
 
-    public class FetchProductListTask extends AsyncTask<String, Void, ArrayList<String>> {
+    public class FetchProductListTask extends AsyncTask<String, Void, JSONArray> {
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements FruitRecyclerView
         }
 
         @Override
-        protected ArrayList<String> doInBackground(String... urlStr){
+        protected JSONArray doInBackground(String... urlStr){
             String jsonRes = null;
             if (urlStr.length > 0) {
                 try {
@@ -94,14 +94,7 @@ public class MainActivity extends AppCompatActivity implements FruitRecyclerView
 
                     JSONArray productArr = new JSONArray(jsonRes);
 
-                    ArrayList<String> stringArray = new ArrayList<>();
-
-                    for(int i = 0, count = productArr.length(); i< count; i++) {
-                        JSONObject jsonObject = productArr.getJSONObject(i);
-                        stringArray.add(jsonObject.getString("title"));
-                    }
-
-                    return stringArray;
+                    return productArr;
                 } catch (Exception e) {
                     //handle exception
                     e.printStackTrace();
@@ -113,8 +106,9 @@ public class MainActivity extends AppCompatActivity implements FruitRecyclerView
         }
 
         @Override
-        protected void onPostExecute(ArrayList<String> productsList){
-            mFruitRecyclerViewAdapter.setFruitList(productsList);
+        protected void onPostExecute(JSONArray productsListArr){
+
+            mFruitRecyclerViewAdapter.setFruitList(productsListArr);
         }
 
 

@@ -4,12 +4,17 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+    <ImageView
+        android:id="@+id/iv_product_img"
+        android:layout_width="@dimen/product_image_size"
+        android:layout_height="@dimen/product_image_size" />
+
     <TextView
-        android:id="@+id/tv_fruit_name"
-        style="@style/TextAppearance.AppCompat.Large"
+        android:id="@+id/tv_product_name"
+        android:textSize="@dimen/product_name_text_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:padding="@dimen/padding_space"
         android:text="trying this out"/>
 
 </LinearLayout>
