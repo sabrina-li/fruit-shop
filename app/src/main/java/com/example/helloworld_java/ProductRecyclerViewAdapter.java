@@ -13,7 +13,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.MainThread;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.helloworld_java.utilities.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,11 +32,10 @@ import java.util.Scanner;
 public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecyclerViewAdapter.ProductAdapterViewHolder> {
 
     private ArrayList<String>  mProductNameList = new ArrayList<>();
-    private ArrayList<String>  mImgArray = new ArrayList<>();
+    private ArrayList<Bitmap> mImgBmList = new ArrayList<>();
 
     private final FruitAdapterOnClickHandler mClickHandler;
 
-    private String imgBaseURLStr;
     private Bitmap productImg;
 
     public interface FruitAdapterOnClickHandler {
@@ -52,7 +54,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         int layoutForListItem = R.layout.fruit_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
-        imgBaseURLStr = viewGroup.getContext().getString(R.string.img_host);
 
         View view = inflater.inflate(layoutForListItem, viewGroup, shouldAttachToParentImmediately);
 
@@ -61,53 +62,25 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
     @Override
     public void onBindViewHolder(final ProductAdapterViewHolder fruitAdapterViewHolder, int pos){
-        final int position = pos;
-        String fruitName = mProductNameList.get(position);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                InputStream stream = null;
-                URLConnection connection = null;
-
-                try {
-
-                    URL url = new URL(imgBaseURLStr+mImgArray.get(position));
-                    connection = url.openConnection();
-                    HttpURLConnection httpConnection = (HttpURLConnection) connection;
-                    httpConnection.setRequestMethod("GET");
-                    httpConnection.connect();
-
-                    if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                        stream = httpConnection.getInputStream();
-                        productImg = BitmapFactory.
-                                decodeStream(stream);
-                        stream.close();
-                        fruitAdapterViewHolder.mProductImageView.setImageBitmap(productImg);
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }).start();
-
-
-        fruitAdapterViewHolder.mFruitTextView.setText(fruitName);
+        String productName = mProductNameList.get(pos);
+        Bitmap productImg = mImgBmList.get(pos);
+        fruitAdapterViewHolder.mFruitTextView.setText(productName);
+        fruitAdapterViewHolder.mProductImageView.setImageBitmap(productImg);
     }
 
     @Override
     public int getItemCount(){
-        if (null == mProductNameList) return 0;
-        return mProductNameList.size();
+        if (null == mProductNameList || null ==mImgBmList) return 0;
+        return Math.min(mProductNameList.size(),mImgBmList.size());
+
     }
 
-    public void setFruitList(JSONArray productsListArr){
-
+    public void setFruitList(JSONArray productsListArr, String imgBaseURLStr){
             try{
                 for(int i = 0, count = productsListArr.length(); i< count; i++) {
                     JSONObject jsonObject = productsListArr.getJSONObject(i);
                     mProductNameList.add(jsonObject.getString("title"));
-                    mImgArray.add(jsonObject.getString("image"));
+                    new FetchProductImgTask().execute(imgBaseURLStr+jsonObject.getString("image"));
                 }
             }catch (Exception e){
                 //handle exception
@@ -118,7 +91,26 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     }
 
 
+    public class FetchProductImgTask extends AsyncTask<String, Void, Bitmap>{
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+        }
 
+        @Override
+        protected Bitmap doInBackground(String... urlStr){
+            if (urlStr.length > 0) {
+                return NetworkUtils.getImageForProduct(urlStr[0]);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap imgBm){
+            mImgBmList.add(imgBm);
+            notifyDataSetChanged();//probably needs optimize?
+        }
+    }
 
     public class ProductAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public final TextView mFruitTextView;

@@ -4,27 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.helloworld_java.data.FruitListData;
+import com.example.helloworld_java.utilities.NetworkUtils;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity implements ProductRecyclerViewAdapter.FruitAdapterOnClickHandler {
 
@@ -53,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements ProductRecyclerVi
     private void showFruitList(){
         String urlStr = getString(R.string.aws_host);
         new FetchProductListTask().execute(urlStr);
-
     }
 
     @Override
@@ -71,44 +61,16 @@ public class MainActivity extends AppCompatActivity implements ProductRecyclerVi
 
         @Override
         protected JSONArray doInBackground(String... urlStr){
-            String jsonRes = null;
             if (urlStr.length > 0) {
-                try {
-                    URL url = new URL(urlStr[0]);
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    try {
-                        InputStream in = urlConnection.getInputStream();
-
-                        Scanner scanner = new Scanner(in);
-                        scanner.useDelimiter("\\A");
-
-                        boolean hasInput = scanner.hasNext();
-                        if (hasInput) {
-                            jsonRes = scanner.next();
-                        } else {
-                            return null;
-                        }
-                    } finally {
-                        urlConnection.disconnect();
-                    }
-
-                    JSONArray productArr = new JSONArray(jsonRes);
-
-                    return productArr;
-                } catch (Exception e) {
-                    //handle exception
-                    e.printStackTrace();
-                    return null;
-                }
+                return NetworkUtils.getProductJSONfromURL(urlStr[0]);
             }
-
             return null;
         }
 
         @Override
         protected void onPostExecute(JSONArray productsListArr){
-
-            mFruitRecyclerViewAdapter.setFruitList(productsListArr);
+            String imgBaseURLStr = getString(R.string.img_host);
+            mFruitRecyclerViewAdapter.setFruitList(productsListArr,imgBaseURLStr);
         }
 
 
