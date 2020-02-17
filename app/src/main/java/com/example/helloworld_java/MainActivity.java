@@ -1,6 +1,9 @@
 package com.example.helloworld_java;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,37 +20,27 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 
-public class MainActivity extends AppCompatActivity implements ProductRecyclerViewAdapter.FruitAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView mRecyclerView;
+
     private BottomNavigationView mBottomNavView;
-    private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        mRecyclerView = (RecyclerView) findViewById(R.id.rv_product);
-//
-//        LinearLayoutManager layoutManager
-//                =new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-//        mRecyclerView.setLayoutManager(layoutManager);
-//
-//        mRecyclerView.setHasFixedSize(true);
-//
-//        mFruitRecyclerViewAdapter = new ProductRecyclerViewAdapter(this);
-//        mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
-//
-//        showFruitList();
+        loadFragment(new MarketFragment());//default frag
 
         mBottomNavView = (BottomNavigationView) findViewById(R.id.navigation);
         mBottomNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener(){
             @Override
             public boolean onNavigationItemSelected(MenuItem item){
+//                Fragment currentFragment = null;
                 switch (item.getItemId()) {
                     case R.id.nav_market:
                         Log.d("Mainactivity","Market");
+                        loadFragment(new MarketFragment());
                         break;
                     case R.id.nav_cart:
                         Log.d("Mainactivity","Cart");
@@ -59,41 +52,17 @@ public class MainActivity extends AppCompatActivity implements ProductRecyclerVi
 
     }
 
-    private void showFruitList(){
-        String urlStr = getString(R.string.aws_host);
-        new FetchProductListTask().execute(urlStr);
+    private boolean loadFragment(Fragment fragment) {
+        //switching fragment
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
     }
 
-    @Override
-    public void onClick(String fruitName){
-        Toast.makeText(this,fruitName,Toast.LENGTH_SHORT)
-                .show();
-        String sessionURL = new FS().getCurrentSessionURL();
-        Log.d("MainActivity","fullstory sessionurl "+sessionURL);
-    }
-
-    public class FetchProductListTask extends AsyncTask<String, Void, JSONArray> {
-        @Override
-        protected void onPreExecute(){
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected JSONArray doInBackground(String... urlStr){
-            if (urlStr.length > 0) {
-                return NetworkUtils.getProductJSONfromURL(urlStr[0]);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(JSONArray productsListArr){
-            String imgBaseURLStr = getString(R.string.img_host);
-            mFruitRecyclerViewAdapter.setFruitList(productsListArr,imgBaseURLStr);
-        }
-
-
-    }
 }
 
