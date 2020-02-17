@@ -38,7 +38,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     @Override
     public ProductAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){
         Context context = viewGroup.getContext();
-        int layoutForListItem = R.layout.fruit_list_item;
+        int layoutForListItem = R.layout.product_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 

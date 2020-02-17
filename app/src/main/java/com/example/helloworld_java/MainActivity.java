@@ -7,17 +7,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.helloworld_java.utilities.NetworkUtils;
 import com.fullstory.FS;
 import com.fullstory.FSSessionData;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 
 public class MainActivity extends AppCompatActivity implements ProductRecyclerViewAdapter.FruitAdapterOnClickHandler {
 
     private RecyclerView mRecyclerView;
+    private BottomNavigationView mBottomNavView;
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
 
     @Override
@@ -25,18 +28,35 @@ public class MainActivity extends AppCompatActivity implements ProductRecyclerVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_product);
+//        mRecyclerView = (RecyclerView) findViewById(R.id.rv_product);
+//
+//        LinearLayoutManager layoutManager
+//                =new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+//        mRecyclerView.setLayoutManager(layoutManager);
+//
+//        mRecyclerView.setHasFixedSize(true);
+//
+//        mFruitRecyclerViewAdapter = new ProductRecyclerViewAdapter(this);
+//        mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
+//
+//        showFruitList();
 
-        LinearLayoutManager layoutManager
-                =new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
+        mBottomNavView = (BottomNavigationView) findViewById(R.id.navigation);
+        mBottomNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener(){
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item){
+                switch (item.getItemId()) {
+                    case R.id.nav_market:
+                        Log.d("Mainactivity","Market");
+                        break;
+                    case R.id.nav_cart:
+                        Log.d("Mainactivity","Cart");
+                        break;
+                }
+                return true;
+            }
+        });
 
-        mRecyclerView.setHasFixedSize(true);
-
-        mFruitRecyclerViewAdapter = new ProductRecyclerViewAdapter(this);
-        mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
-
-        showFruitList();
     }
 
     private void showFruitList(){
