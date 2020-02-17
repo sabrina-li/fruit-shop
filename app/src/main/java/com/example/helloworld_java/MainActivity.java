@@ -42,14 +42,14 @@ public class MainActivity extends AppCompatActivity implements ProductRecyclerVi
     private void showFruitList(){
         String urlStr = getString(R.string.aws_host);
         new FetchProductListTask().execute(urlStr);
-        String sessionURL = new FSSessionData().getCurrentSessionURL();
-        Log.d("fullstory",String.valueOf(sessionURL));
     }
 
     @Override
     public void onClick(String fruitName){
         Toast.makeText(this,fruitName,Toast.LENGTH_SHORT)
                 .show();
+        String sessionURL = new FS().getCurrentSessionURL();
+        Log.d("MainActivity","fullstory sessionurl "+sessionURL);
     }
 
     public class FetchProductListTask extends AsyncTask<String, Void, JSONArray> {
