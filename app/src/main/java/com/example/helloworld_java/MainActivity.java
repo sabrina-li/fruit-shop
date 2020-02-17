@@ -12,11 +12,6 @@ import com.example.helloworld_java.utilities.NetworkUtils;
 
 import org.json.JSONArray;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
-
 public class MainActivity extends AppCompatActivity implements ProductRecyclerViewAdapter.FruitAdapterOnClickHandler {
 
     private RecyclerView mRecyclerView;

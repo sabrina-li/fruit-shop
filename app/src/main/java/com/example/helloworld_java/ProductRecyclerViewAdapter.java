@@ -1,33 +1,21 @@
 package com.example.helloworld_java;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.service.autofill.TextValueSanitizer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.MainThread;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.helloworld_java.utilities.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecyclerViewAdapter.ProductAdapterViewHolder> {
 
@@ -35,8 +23,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     private ArrayList<Bitmap> mImgBmList = new ArrayList<>();
 
     private final FruitAdapterOnClickHandler mClickHandler;
-
-    private Bitmap productImg;
 
     public interface FruitAdapterOnClickHandler {
         void onClick(String fruit);
