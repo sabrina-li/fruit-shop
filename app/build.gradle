@@ -1,15 +1,23 @@
 apply plugin: 'com.android.application'
+apply plugin: 'fullstory'
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
+fullstory {
+    org properties.getProperty('org')
+    enabledVariants properties.getProperty('enabledVariants')
+    server properties.getProperty('server')
+}
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.helloworld_java"
-        minSdkVersion 15
-        targetSdkVersion 29
+        minSdkVersion 19
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -20,8 +28,13 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    def multidex_version = "2.0.1"
+    implementation "androidx.multidex:multidex:$multidex_version"
     implementation 'androidx.appcompat:appcompat:1.0.2'
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+
     implementation 'androidx.recyclerview:recyclerview-selection:1.1.0-rc01'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'

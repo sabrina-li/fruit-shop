@@ -6,9 +6,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.helloworld_java.utilities.NetworkUtils;
+import com.fullstory.FS;
+import com.fullstory.FSSessionData;
 
 import org.json.JSONArray;
 
@@ -39,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements ProductRecyclerVi
     private void showFruitList(){
         String urlStr = getString(R.string.aws_host);
         new FetchProductListTask().execute(urlStr);
+        String sessionURL = new FSSessionData().getCurrentSessionURL();
+        Log.d("fullstory",String.valueOf(sessionURL));
     }
 
     @Override
