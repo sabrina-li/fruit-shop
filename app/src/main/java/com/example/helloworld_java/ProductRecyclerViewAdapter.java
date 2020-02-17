@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.helloworld_java.utilities.NetworkUtils;
+import com.fullstory.FS;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -58,7 +59,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     public int getItemCount(){
         if (null == mProductNameList || null ==mImgBmList) return 0;
         return Math.min(mProductNameList.size(),mImgBmList.size());
-
     }
 
     public void setFruitList(JSONArray productsListArr, String imgBaseURLStr){
@@ -72,7 +72,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
                 //handle exception
                 e.printStackTrace();
             }
-
         notifyDataSetChanged();
     }
 
@@ -102,11 +101,11 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         public final TextView mFruitTextView;
         public final ImageView mProductImageView;
 
-
         public ProductAdapterViewHolder(View view){
             super(view);
             mFruitTextView = (TextView) view.findViewById(R.id.tv_product_name);
             mProductImageView = (ImageView) view.findViewById(R.id.iv_product_img);
+            FS.addClass(mFruitTextView, "fs-unmask");
             view.setOnClickListener(this);
         }
 
