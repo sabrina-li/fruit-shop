@@ -2,9 +2,11 @@ package com.example.helloworld_java.utilities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import org.json.JSONArray;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -14,58 +16,67 @@ import java.util.Scanner;
 public final class NetworkUtils {
 
     public static JSONArray getProductJSONfromURL(String urlStr){
-        String jsonRes = null;
+        String jsonResStr = null;
+        InputStream stream = null;
+        HttpURLConnection connection = null;
+        Scanner scanner = null;
+        JSONArray productArr = null;
 
-            try {
-                URL url = new URL(urlStr);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                try {
-                    InputStream in = urlConnection.getInputStream();
+        try {
+            URL url = new URL(urlStr);
+            connection = (HttpURLConnection) url.openConnection();
 
-                    Scanner scanner = new Scanner(in);
-                    scanner.useDelimiter("\\A");
-
-                    boolean hasInput = scanner.hasNext();
-                    if (hasInput) {
-                        jsonRes = scanner.next();
-                    } else {
-                        return null;
-                    }
-                } finally {
-                    urlConnection.disconnect();
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                stream = connection.getInputStream();
+                scanner = new Scanner(stream);
+                scanner.useDelimiter("\\A");
+                boolean hasInput = scanner.hasNext();
+                if (hasInput) {
+                    jsonResStr = scanner.next();
                 }
-
-                JSONArray productArr = new JSONArray(jsonRes);
-
-                return productArr;
-            } catch (Exception e) {
-                //handle exception
-                e.printStackTrace();
-                return null;
             }
+
+            productArr = new JSONArray(jsonResStr);
+        } catch (Exception e) {
+            //handle exception
+            e.printStackTrace();
+        }finally {
+            try{
+                scanner.close();
+                stream.close();
+                connection.disconnect();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        return productArr;
     }
 
     public static Bitmap getImageForProduct(String urlStr){
         InputStream stream = null;
-        URLConnection connection = null;
+        HttpURLConnection connection = null;
         Bitmap productImg = null;
 
         try {
-
             URL url = new URL(urlStr);
-            connection = url.openConnection();
-            HttpURLConnection httpConnection = (HttpURLConnection) connection;
-            httpConnection.setRequestMethod("GET");
-            httpConnection.connect();
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
 
-            if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                stream = httpConnection.getInputStream();
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                stream = connection.getInputStream();
                 productImg = BitmapFactory.
                         decodeStream(stream);
-                stream.close();
             }
-        } catch (Exception ex) {
+        }catch (Exception ex) {
             ex.printStackTrace();
+        }finally {
+            try{
+                stream.close();
+                connection.disconnect();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
         }
         return productImg;
     }
