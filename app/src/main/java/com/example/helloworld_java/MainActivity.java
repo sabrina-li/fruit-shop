@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.example.helloworld_java.utilities.NetworkUtils;
@@ -30,7 +31,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadFragment(new MarketFragment());//default fragment to market
+        final Fragment marketFragment = new MarketFragment();
+
+        loadFragment(marketFragment);//default fragment to market
 
         mBottomNavView = (BottomNavigationView) findViewById(R.id.navigation);
         FS.addClass(mBottomNavView,"fs-unmask");
@@ -40,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.nav_market:
                         Log.d("Mainactivity","Market");
-                        loadFragment(new MarketFragment());
+                        loadFragment(marketFragment);
                         break;
                     case R.id.nav_cart:
                         Log.d("Mainactivity","Cart");
