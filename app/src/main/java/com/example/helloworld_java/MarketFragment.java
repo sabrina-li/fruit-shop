@@ -1,11 +1,13 @@
 package com.example.helloworld_java;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -34,7 +36,6 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
 
         showFruitList();
-
     }
 
     @Override
@@ -63,7 +64,6 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
-
         }
 
         @Override

@@ -30,16 +30,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadFragment(new MarketFragment());//default frag
+        loadFragment(new MarketFragment());//default fragment to market
 
         mBottomNavView = (BottomNavigationView) findViewById(R.id.navigation);
         FS.addClass(mBottomNavView,"fs-unmask");
-        FS.addClass(findViewById(R.id.nav_market),"fs-unmask");
-        FS.addClass(findViewById(R.id.nav_cart),"fs-unmask");
         mBottomNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener(){
             @Override
             public boolean onNavigationItemSelected(MenuItem item){
-//                Fragment currentFragment = null;
                 switch (item.getItemId()) {
                     case R.id.nav_market:
                         Log.d("Mainactivity","Market");
@@ -58,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
     private boolean loadFragment(Fragment fragment) {
         //switching fragment
         if (fragment != null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
             return true;
         }
         return false;
