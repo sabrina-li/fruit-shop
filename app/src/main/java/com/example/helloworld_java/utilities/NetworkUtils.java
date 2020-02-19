@@ -4,23 +4,31 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.example.helloworld_java.data.Product;
+
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public final class NetworkUtils {
 
-    public static JSONArray getProductJSONfromURL(String urlStr){
+    public static ArrayList<Product> getProductJSONfromURL(String urlStr){
         String jsonResStr = null;
         InputStream stream = null;
         HttpURLConnection connection = null;
         Scanner scanner = null;
         JSONArray productArr = null;
+        ArrayList<Product> productList = new ArrayList<>();
 
         try {
             URL url = new URL(urlStr);
@@ -37,10 +45,20 @@ public final class NetworkUtils {
             }
 
             productArr = new JSONArray(jsonResStr);
-        } catch (Exception e) {
-            //handle exception
-            e.printStackTrace();
-        }finally {
+            if (productArr != null) {
+                for (int i=0;i<productArr.length();i++){
+                    JSONObject p = productArr.getJSONObject(i);
+                    productList.add (new Product(p.getString("title"), p.getString("description"),
+                            p.getDouble("price"), p.getString("image") , p.getString("quantity"), 0));
+
+                }
+            }
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        } finally {
             try{
                 scanner.close();
                 stream.close();
@@ -49,7 +67,7 @@ public final class NetworkUtils {
                 e.printStackTrace();
             }
         }
-        return productArr;
+        return productList;
     }
 
     public static Bitmap getImageForProduct(String urlStr){

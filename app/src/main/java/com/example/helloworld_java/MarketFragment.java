@@ -26,6 +26,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MarketFragment extends Fragment implements ProductRecyclerViewAdapter.FruitAdapterOnClickHandler{
     private RecyclerView mRecyclerView;
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
@@ -65,17 +68,17 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     }
 
     @Override
-    public void onClick(JSONObject productObj){
+    public void onClick(Product productObj){
         try {
-            Toast.makeText(getContext(),productObj.getString("title"),Toast.LENGTH_SHORT)
+            Toast.makeText(getContext(),productObj.title,Toast.LENGTH_SHORT)
                     .show();
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         //add 1lb to cart
         final Product product;
         try {
-            product = new Product(productObj.getString("title"),productObj.getString("description"),productObj.getDouble("price"),productObj.getString("image"),productObj.getString("quantity"),1);
+            product = new Product(productObj.title,productObj.description,productObj.price,productObj.image,productObj.unit,1);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -87,20 +90,20 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
                 }
             }).start();
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    public class FetchProductListTask extends AsyncTask<String, Void, JSONArray> {
+    public class FetchProductListTask extends AsyncTask<String, Void, ArrayList<Product>> {
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
         }
 
         @Override
-        protected JSONArray doInBackground(String... urlStr){
+        protected ArrayList<Product> doInBackground(String... urlStr){
             if (urlStr.length > 0) {
                 return NetworkUtils.getProductJSONfromURL(urlStr[0]);
             }
@@ -108,7 +111,7 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         }
 
         @Override
-        protected void onPostExecute(JSONArray productsListArr){
+        protected void onPostExecute(ArrayList<Product> productsListArr){
             String imgBaseURLStr = getString(R.string.img_host);
             mFruitRecyclerViewAdapter.setFruitList(productsListArr,imgBaseURLStr);
         }

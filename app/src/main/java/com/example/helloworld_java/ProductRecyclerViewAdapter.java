@@ -19,17 +19,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecyclerViewAdapter.ProductAdapterViewHolder> {
 
     private ArrayList<String>  mProductNameList = new ArrayList<>();
     private ArrayList<Bitmap> mImgBmList = new ArrayList<>();
-    private JSONArray mProductsListArr;
+    private List<Product> mProductsListArr;
 
     private final FruitAdapterOnClickHandler mClickHandler;
 
     public interface FruitAdapterOnClickHandler {
-        void onClick(JSONObject product);
+        void onClick(Product product);
     }
 
     //constructor
@@ -64,13 +65,13 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         return Math.min(mProductNameList.size(),mImgBmList.size());
     }
 
-    public void setFruitList(JSONArray productsListArr, String imgBaseURLStr){
+    public void setFruitList(List productsListArr, String imgBaseURLStr){
         mProductsListArr = productsListArr;
         try{
-            for(int i = 0, count = productsListArr.length(); i< count; i++) {
-                JSONObject jsonObject = productsListArr.getJSONObject(i);
-                mProductNameList.add(jsonObject.getString("title"));
-                new FetchProductImgTask().execute(imgBaseURLStr+jsonObject.getString("image"));
+            for(int i = 0, count = productsListArr.size(); i< count; i++) {
+                Product product = (Product) productsListArr.get(i);
+                mProductNameList.add(product.title);
+                new FetchProductImgTask().execute(imgBaseURLStr+product.image);
             }
         }catch (Exception e){
             //handle exception
@@ -117,9 +118,9 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             try {
-                JSONObject product = mProductsListArr.getJSONObject(adapterPosition);
+                Product product = (Product) mProductsListArr.get(adapterPosition);
                 mClickHandler.onClick(product);
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

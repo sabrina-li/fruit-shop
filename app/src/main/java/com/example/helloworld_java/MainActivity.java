@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity","fullstory sessionurl "+sessionURL);
 
         final Fragment marketFragment = new MarketFragment();
+        final Fragment cartFragment = new CartFragment();
 
         loadFragment(marketFragment);//default fragment to market
 
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_cart:
                         Log.d("Mainactivity","Cart");
+                        loadFragment(cartFragment);
                         break;
                 }
                 return true;
