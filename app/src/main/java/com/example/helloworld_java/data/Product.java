@@ -1,5 +1,6 @@
 package com.example.helloworld_java.data;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -20,8 +21,8 @@ import org.json.JSONObject;
 
 @Entity
 public class Product {
-    @PrimaryKey(autoGenerate = true)
 
+    @PrimaryKey@NonNull
     @ColumnInfo(name = "title")
     public String title;
 
@@ -40,15 +41,12 @@ public class Product {
     @ColumnInfo(name = "quantityInCart")
     public int quantityInCart = 0;
 
-    public Product(JSONObject productObj) {
-        try {
-            this.title = productObj.getString("title");
-            this.description = productObj.getString("description");
-            this.price = productObj.getDouble("price");
-            this.image = productObj.getString("image");
-            this.unit = productObj.getString("unit");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+    public Product(String title, String description, Double price, String image, String unit, int quantityInCart) {
+            this.title = title;
+            this.description = description;
+            this.price = price;
+            this.image = image;
+            this.unit = unit;
     }
 }

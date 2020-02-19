@@ -1,5 +1,7 @@
 package com.example.helloworld_java;
 
+import android.app.Application;
+import android.app.ListActivity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.helloworld_java.data.AppDatabase;
 import com.example.helloworld_java.data.Product;
 import com.example.helloworld_java.data.ProductDao;
 import com.example.helloworld_java.utilities.NetworkUtils;
@@ -26,7 +29,9 @@ import org.json.JSONObject;
 public class MarketFragment extends Fragment implements ProductRecyclerViewAdapter.FruitAdapterOnClickHandler{
     private RecyclerView mRecyclerView;
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
-    private ProductDao productDao;
+    private ProductDao mProductDao;
+
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
@@ -39,6 +44,9 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
 
         mFruitRecyclerViewAdapter = new ProductRecyclerViewAdapter(this);
         mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
+
+        AppDatabase db = AppDatabase.getDatabase(getContext());
+        mProductDao = db.productDao();
 
         showFruitList();
     }
@@ -65,8 +73,23 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
             e.printStackTrace();
         }
         //add 1lb to cart
-        Product product = new Product(productObj);
-        productDao.insertAll(product);
+        final Product product;
+        try {
+            product = new Product(productObj.getString("title"),productObj.getString("description"),productObj.getDouble("price"),productObj.getString("image"),productObj.getString("quantity"),1);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        mProductDao.insertAll(product);//TODO: this should be update count in cart, but this will do for now for building cart ui
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
