@@ -15,7 +15,6 @@ public interface ProductDao {
     @Query("SELECT * FROM product WHERE title IN (:productTitles)")
     List<Product> loadAllByTitles(String[] productTitles);
 
-
     @Insert
     void insertAll(Product... products);
 

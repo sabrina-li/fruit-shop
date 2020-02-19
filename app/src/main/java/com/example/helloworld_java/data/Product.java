@@ -4,6 +4,9 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 /*    {
         "title": "Bananas",
@@ -17,8 +20,7 @@ import androidx.room.PrimaryKey;
 
 @Entity
 public class Product {
-    @PrimaryKey
-    public int uid;
+    @PrimaryKey(autoGenerate = true)
 
     @ColumnInfo(name = "title")
     public String title;
@@ -33,8 +35,20 @@ public class Product {
     public String image;
 
     @ColumnInfo(name = "unit")
-    public String unit;
+    public String unit="lb";
 
     @ColumnInfo(name = "quantityInCart")
-    public int quantityInCart;
+    public int quantityInCart = 0;
+
+    public Product(JSONObject productObj) {
+        try {
+            this.title = productObj.getString("title");
+            this.description = productObj.getString("description");
+            this.price = productObj.getDouble("price");
+            this.image = productObj.getString("image");
+            this.unit = productObj.getString("unit");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }

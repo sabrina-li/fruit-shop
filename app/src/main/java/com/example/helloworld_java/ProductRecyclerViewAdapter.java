@@ -11,10 +11,12 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.helloworld_java.data.Product;
 import com.example.helloworld_java.utilities.NetworkUtils;
 import com.fullstory.FS;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 
@@ -22,11 +24,12 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
     private ArrayList<String>  mProductNameList = new ArrayList<>();
     private ArrayList<Bitmap> mImgBmList = new ArrayList<>();
+    private JSONArray mProductsListArr;
 
     private final FruitAdapterOnClickHandler mClickHandler;
 
     public interface FruitAdapterOnClickHandler {
-        void onClick(String fruit);
+        void onClick(JSONObject product);
     }
 
     //constructor
@@ -62,16 +65,17 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     }
 
     public void setFruitList(JSONArray productsListArr, String imgBaseURLStr){
-            try{
-                for(int i = 0, count = productsListArr.length(); i< count; i++) {
-                    JSONObject jsonObject = productsListArr.getJSONObject(i);
-                    mProductNameList.add(jsonObject.getString("title"));
-                    new FetchProductImgTask().execute(imgBaseURLStr+jsonObject.getString("image"));
-                }
-            }catch (Exception e){
-                //handle exception
-                e.printStackTrace();
+        mProductsListArr = productsListArr;
+        try{
+            for(int i = 0, count = productsListArr.length(); i< count; i++) {
+                JSONObject jsonObject = productsListArr.getJSONObject(i);
+                mProductNameList.add(jsonObject.getString("title"));
+                new FetchProductImgTask().execute(imgBaseURLStr+jsonObject.getString("image"));
             }
+        }catch (Exception e){
+            //handle exception
+            e.printStackTrace();
+        }
         notifyDataSetChanged();
     }
 
@@ -112,8 +116,13 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            String fruitName = mProductNameList.get(adapterPosition);
-            mClickHandler.onClick(fruitName);
+            try {
+                JSONObject product = mProductsListArr.getJSONObject(adapterPosition);
+                mClickHandler.onClick(product);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

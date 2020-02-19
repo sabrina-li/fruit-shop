@@ -14,14 +14,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.helloworld_java.data.Product;
+import com.example.helloworld_java.data.ProductDao;
 import com.example.helloworld_java.utilities.NetworkUtils;
 import com.fullstory.FS;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MarketFragment extends Fragment implements ProductRecyclerViewAdapter.FruitAdapterOnClickHandler{
     private RecyclerView mRecyclerView;
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
+    private ProductDao productDao;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
@@ -52,10 +57,16 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     }
 
     @Override
-    public void onClick(String fruitName){
-        Toast.makeText(getContext(),fruitName,Toast.LENGTH_SHORT)
-                .show();
+    public void onClick(JSONObject productObj){
+        try {
+            Toast.makeText(getContext(),productObj.getString("title"),Toast.LENGTH_SHORT)
+                    .show();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         //add 1lb to cart
+        Product product = new Product(productObj);
+        productDao.insertAll(product);
     }
 
 
