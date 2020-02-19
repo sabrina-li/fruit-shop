@@ -55,8 +55,7 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     public void onClick(String fruitName){
         Toast.makeText(getContext(),fruitName,Toast.LENGTH_SHORT)
                 .show();
-        String sessionURL = new FS().getCurrentSessionURL();
-        Log.d("MainActivity","fullstory sessionurl "+sessionURL);
+        //add 1lb to cart
     }
 
 

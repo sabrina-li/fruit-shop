@@ -31,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String sessionURL = new FS().getCurrentSessionURL();
+        Log.d("MainActivity","fullstory sessionurl "+sessionURL);
+
         final Fragment marketFragment = new MarketFragment();
 
         loadFragment(marketFragment);//default fragment to market
