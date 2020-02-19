@@ -8,9 +8,10 @@ import androidx.room.PrimaryKey;
 /*    {
         "title": "Bananas",
             "description": "The old reliable.",
-            "price": 2.99,
+            "price": 2.99,ΩΩΩΩ
             "image": "banans.jpg",
-            "quantity": "lb."
+            "unit": "lb.", // this is called quantity in json api
+            "quantityInCart": "2" // this is different from the quantity returned from json
     }
  */
 
@@ -31,6 +32,9 @@ public class Product {
     @ColumnInfo(name = "image")
     public String image;
 
-    @ColumnInfo(name = "quantity")
-    public String quantity;
+    @ColumnInfo(name = "unit")
+    public String unit;
+
+    @ColumnInfo(name = "quantityInCart")
+    public int quantityInCart;
 }
