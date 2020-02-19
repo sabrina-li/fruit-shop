@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         loadFragment(marketFragment);//default fragment to market
 
         mBottomNavView = (BottomNavigationView) findViewById(R.id.navigation);
-        FS.addClass(mBottomNavView,"fs-unmask");
+        FS.addClass(mBottomNavView,FS.UNMASK_CLASS);
         mBottomNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener(){
             @Override
             public boolean onNavigationItemSelected(MenuItem item){

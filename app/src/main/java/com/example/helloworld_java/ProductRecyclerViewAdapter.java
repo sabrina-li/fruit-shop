@@ -105,7 +105,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
             super(view);
             mFruitTextView = (TextView) view.findViewById(R.id.tv_product_name);
             mProductImageView = (ImageView) view.findViewById(R.id.iv_product_img);
-            FS.addClass(mFruitTextView, "fs-unmask");
+            FS.addClass(mFruitTextView, FS.UNMASK_CLASS);
             view.setOnClickListener(this);
         }
 
