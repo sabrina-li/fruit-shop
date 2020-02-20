@@ -38,6 +38,7 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
     private ProductDao mProductDao;
     private List<Product> mProductsList;
+    AppDatabase db;
 
 
 
@@ -53,7 +54,7 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         mFruitRecyclerViewAdapter = new ProductRecyclerViewAdapter(this);
         mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
 
-        AppDatabase db = AppDatabase.getDatabase(getContext());
+        db = AppDatabase.getDatabase(getContext());
         mProductDao = db.productDao();
 
         showFruitList();
@@ -74,27 +75,11 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
 
     @Override
     public void onClick(Product productObj){
-        try {
-            Toast.makeText(getContext(),productObj.title,Toast.LENGTH_SHORT)
-                    .show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         //add 1lb to cart
         final Product product;
         try {
             product = new Product(productObj.title,productObj.description,productObj.price,productObj.image,productObj.unit,1);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try{
-                        mProductDao.insertAll(product);//TODO: this should be update count in cart, but this will do for now for building cart ui
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-
+            new AddProductToCartTask().execute(product);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,7 +100,40 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     }
 
 
-    public class FetchProductListTask extends AsyncTask<String, Void, ArrayList<Product>> {
+    private class AddProductToCartTask extends  AsyncTask<Product, Void, Product>{
+        @Override
+        protected void onPreExecute(){super.onPreExecute();}
+
+        @Override
+        protected Product doInBackground (final Product... products){
+            if (products.length > 0) {
+                //transaction here
+                db.runInTransaction(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<Product> productInCart = mProductDao.loadAllByTitles(products[0].title);
+                        if(productInCart.size()>0){
+                            productInCart.get(0).quantityInCart++;
+                            mProductDao.updateQuantityInCart(productInCart.get(0));
+                        }else {
+                            mProductDao.insertAll(products[0]);
+                        }
+
+                    }
+                });
+                return products[0];
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Product product){
+            if(product != null){
+                Toast.makeText(getContext(),product.title + " added to cart!",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    private class FetchProductListTask extends AsyncTask<String, Void, ArrayList<Product>> {
         @Override
         protected void onPreExecute(){
             super.onPreExecute();

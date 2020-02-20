@@ -38,8 +38,8 @@ public class Product {
     @ColumnInfo(name = "unit")
     public String unit="lb";
 
-    @ColumnInfo(name = "quantityInCart")
-    public int quantityInCart = 0;
+    @ColumnInfo(name = "quantityInCart",defaultValue = "1")
+    public int quantityInCart;
 
 
     public Product(String title, String description, Double price, String image, String unit, int quantityInCart) {
@@ -48,5 +48,6 @@ public class Product {
             this.price = price;
             this.image = image;
             this.unit = unit;
+            this.quantityInCart=quantityInCart;
     }
 }

@@ -120,7 +120,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
             mFragmentSpecificViewGroup = view.findViewById(R.id.vg_fragment_specific_view);
 
             FS.addClass(mFruitTextView, FS.UNMASK_CLASS);
-            mFragmentSpecificViewGroup.setOnClickListener(this);
+            view.setOnClickListener(this);
         }
 
         @Override

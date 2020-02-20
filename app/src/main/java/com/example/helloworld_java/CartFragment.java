@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -75,9 +77,17 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
 
     @Override
     public View createFragmentSpecificView(Product product){
+        LinearLayout layout = new LinearLayout(getContext());
+
+        TextView count = new TextView(getContext());
+        count.setText(product.quantityInCart + " in cart");
+        layout.addView(count);
+
         Button actonBtn = new Button(getContext());
         actonBtn.setText("Remove from Cart");
-        return actonBtn;
+        layout.addView(actonBtn);
+
+        return layout;
     }
 
 
