@@ -74,7 +74,7 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
     }
 
     @Override
-    public View createActionView(){
+    public View createFragmentSpecificView(Product product){
         Button actonBtn = new Button(getContext());
         actonBtn.setText("Remove from Cart");
         return actonBtn;
@@ -95,7 +95,7 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         @Override
         protected void onPostExecute(ArrayList<Product> productsList) {
             String imgBaseURLStr = getString(R.string.img_host);
-            mFruitRecyclerViewAdapter.setFruitList(productsList, imgBaseURLStr);
+            mFruitRecyclerViewAdapter.setProductList(productsList, imgBaseURLStr);
         }
     }
 }

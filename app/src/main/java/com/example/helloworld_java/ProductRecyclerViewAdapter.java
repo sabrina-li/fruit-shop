@@ -25,13 +25,12 @@ import java.util.List;
 
 public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecyclerViewAdapter.ProductAdapterViewHolder> {
 
-    private ArrayList<String>  mProductNameList = new ArrayList<>();
     private ArrayList<Bitmap> mImgBmList = new ArrayList<>();
     private List<Product> mProductsListArr;
 
     public interface ProductAdapterHandler {
         void onClick(Product product);
-        View createActionView();
+        View createFragmentSpecificView(Product product);
     }
 
     private final ProductAdapterHandler mHandler;
@@ -50,37 +49,32 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutForListItem, viewGroup, shouldAttachToParentImmediately);
-        ViewGroup vg;
-        if(view instanceof  ViewGroup){
-            Log.d("product","is view group");
-            vg = (ViewGroup) view;
-            vg.addView(mHandler.createActionView());
-            return new ProductAdapterViewHolder(vg);
-        }else{
-            return new ProductAdapterViewHolder(view);
-        }
+        return new ProductAdapterViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ProductAdapterViewHolder fruitAdapterViewHolder, int pos){
-        String productName = mProductNameList.get(pos);
+        Product product = mProductsListArr.get(pos);
         Bitmap productImg = mImgBmList.get(pos);
-        fruitAdapterViewHolder.mFruitTextView.setText(productName);
+        fruitAdapterViewHolder.mFruitTextView.setText(product.title);
         fruitAdapterViewHolder.mProductImageView.setImageBitmap(productImg);
+        fruitAdapterViewHolder.mFragmentSpecificViewGroup.removeAllViews();
+        Log.d("rvadaper",String.valueOf(product.title+' '+product.unit+' '+product.price+' '+product.unit));
+        fruitAdapterViewHolder.mFragmentSpecificViewGroup.addView(mHandler.createFragmentSpecificView(product));
     }
 
     @Override
     public int getItemCount(){
-        if (null == mProductNameList || null ==mImgBmList) return 0;
-        return Math.min(mProductNameList.size(),mImgBmList.size());
+        if (null == mProductsListArr || null ==mImgBmList) return 0;
+        return Math.min(mProductsListArr.size(),mImgBmList.size());
     }
 
-    public void setFruitList(List productsListArr, String imgBaseURLStr){
+    public void setProductList(List productsListArr, String imgBaseURLStr){
         mProductsListArr = productsListArr;
         try{
             for(int i = 0, count = productsListArr.size(); i< count; i++) {
                 Product product = (Product) productsListArr.get(i);
-                mProductNameList.add(product.title);
+                mProductsListArr.add(product);
                 new FetchProductImgTask().execute(imgBaseURLStr+product.image);
             }
         }catch (Exception e){
@@ -115,20 +109,25 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     public class ProductAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public final TextView mFruitTextView;
         public final ImageView mProductImageView;
+        public final ViewGroup mFragmentSpecificViewGroup;
+
 
         public ProductAdapterViewHolder(View view){
             super(view);
+
             mFruitTextView = view.findViewById(R.id.tv_product_name);
             mProductImageView = view.findViewById(R.id.iv_product_img);
+            mFragmentSpecificViewGroup = view.findViewById(R.id.vg_fragment_specific_view);
+
             FS.addClass(mFruitTextView, FS.UNMASK_CLASS);
-            view.setOnClickListener(this);
+            mFragmentSpecificViewGroup.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             try {
-                Product product = (Product) mProductsListArr.get(adapterPosition);
+                Product product = mProductsListArr.get(adapterPosition);
                 mHandler.onClick(product);
             } catch (Exception e) {
                 e.printStackTrace();

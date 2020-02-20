@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -35,6 +37,7 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     private RecyclerView mRecyclerView;
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
     private ProductDao mProductDao;
+    private List<Product> mProductsList;
 
 
 
@@ -74,10 +77,6 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         try {
             Toast.makeText(getContext(),productObj.title,Toast.LENGTH_SHORT)
                     .show();
-        String sessionURL = new FS().getCurrentSessionURL();
-        Log.d("MainActivity","fullstory sessionurl "+sessionURL);
-        Log.d("MainActivity",FS.getCurrentSession());
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,11 +101,17 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     }
 
     @Override
-    public View createActionView(){
+    public View createFragmentSpecificView(Product product){
+        LinearLayout layout = new LinearLayout(getContext());
+        TextView priceTextView = new TextView(getContext());
+        priceTextView.setText(product.price.toString()+'/'+product.unit);
+        layout.addView(priceTextView);
 
         Button actonBtn = new Button(getContext());
         actonBtn.setText("Add to Cart");
-        return actonBtn;
+        layout.addView(actonBtn);
+
+        return layout;
     }
 
 
@@ -127,7 +132,8 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         @Override
         protected void onPostExecute(ArrayList<Product> productsListArr){
             String imgBaseURLStr = getString(R.string.img_host);
-            mFruitRecyclerViewAdapter.setFruitList(productsListArr,imgBaseURLStr);
+            mProductsList = productsListArr;
+            mFruitRecyclerViewAdapter.setProductList(productsListArr,imgBaseURLStr);
         }
     }
 }
