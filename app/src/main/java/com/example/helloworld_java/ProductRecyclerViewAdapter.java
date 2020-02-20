@@ -3,9 +3,11 @@ package com.example.helloworld_java;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,15 +29,16 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     private ArrayList<Bitmap> mImgBmList = new ArrayList<>();
     private List<Product> mProductsListArr;
 
-    private final FruitAdapterOnClickHandler mClickHandler;
-
-    public interface FruitAdapterOnClickHandler {
+    public interface ProductAdapterHandler {
         void onClick(Product product);
+        View createActionView();
     }
 
+    private final ProductAdapterHandler mHandler;
+
     //constructor
-    public ProductRecyclerViewAdapter(FruitAdapterOnClickHandler clickHander){
-        mClickHandler = clickHander;
+    public ProductRecyclerViewAdapter(ProductAdapterHandler handler){
+        mHandler = handler;
     }
 
     //create view holder
@@ -47,8 +50,15 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutForListItem, viewGroup, shouldAttachToParentImmediately);
-
-        return new ProductAdapterViewHolder(view);
+        ViewGroup vg;
+        if(view instanceof  ViewGroup){
+            Log.d("product","is view group");
+            vg = (ViewGroup) view;
+            vg.addView(mHandler.createActionView());
+            return new ProductAdapterViewHolder(vg);
+        }else{
+            return new ProductAdapterViewHolder(view);
+        }
     }
 
     @Override
@@ -108,8 +118,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
         public ProductAdapterViewHolder(View view){
             super(view);
-            mFruitTextView = (TextView) view.findViewById(R.id.tv_product_name);
-            mProductImageView = (ImageView) view.findViewById(R.id.iv_product_img);
+            mFruitTextView = view.findViewById(R.id.tv_product_name);
+            mProductImageView = view.findViewById(R.id.iv_product_img);
             FS.addClass(mFruitTextView, FS.UNMASK_CLASS);
             view.setOnClickListener(this);
         }
@@ -119,7 +129,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
             int adapterPosition = getAdapterPosition();
             try {
                 Product product = (Product) mProductsListArr.get(adapterPosition);
-                mClickHandler.onClick(product);
+                mHandler.onClick(product);
             } catch (Exception e) {
                 e.printStackTrace();
             }

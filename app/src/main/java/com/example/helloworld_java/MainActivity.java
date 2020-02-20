@@ -16,23 +16,28 @@ import android.widget.Toast;
 
 import com.example.helloworld_java.utilities.NetworkUtils;
 import com.fullstory.FS;
+import com.fullstory.FSOnReadyListener;
 import com.fullstory.FSSessionData;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FSOnReadyListener{
 
 
     private BottomNavigationView mBottomNavView;
+
+
+    @Override
+    public void onReady(FSSessionData sessionData){
+        Log.d("MainActivity","fullstory sessionurl "+sessionData.getCurrentSessionURL());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        String sessionURL = new FS().getCurrentSessionURL();
-        Log.d("MainActivity","fullstory sessionurl "+sessionURL);
+        FS.setReadyListener(this);
 
         final Fragment marketFragment = new MarketFragment();
         final Fragment cartFragment = new CartFragment();

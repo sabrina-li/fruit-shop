@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -21,6 +22,7 @@ import com.example.helloworld_java.data.Product;
 import com.example.helloworld_java.data.ProductDao;
 import com.example.helloworld_java.utilities.NetworkUtils;
 import com.fullstory.FS;
+import com.fullstory.FSSessionData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +31,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MarketFragment extends Fragment implements ProductRecyclerViewAdapter.FruitAdapterOnClickHandler{
+public class MarketFragment extends Fragment implements ProductRecyclerViewAdapter.ProductAdapterHandler{
     private RecyclerView mRecyclerView;
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
     private ProductDao mProductDao;
@@ -38,7 +40,7 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_product);
+        mRecyclerView = view.findViewById(R.id.rv_product);
         LinearLayoutManager layoutManager
                 =new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -72,6 +74,10 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         try {
             Toast.makeText(getContext(),productObj.title,Toast.LENGTH_SHORT)
                     .show();
+        String sessionURL = new FS().getCurrentSessionURL();
+        Log.d("MainActivity","fullstory sessionurl "+sessionURL);
+        Log.d("MainActivity",FS.getCurrentSession());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -93,6 +99,14 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public View createActionView(){
+
+        Button actonBtn = new Button(getContext());
+        actonBtn.setText("Add to Cart");
+        return actonBtn;
     }
 
 

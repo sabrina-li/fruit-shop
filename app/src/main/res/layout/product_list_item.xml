@@ -15,7 +15,6 @@
         android:textSize="@dimen/product_name_text_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_space"
-        android:text="trying this out"/>
+        android:padding="@dimen/padding_space" />
 
 </LinearLayout>
