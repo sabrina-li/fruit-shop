@@ -124,7 +124,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
             mActionButton = view.findViewById(R.id.btn_product_action);
 
             FS.addClass(mFruitTextView, FS.UNMASK_CLASS);
-            view.setOnClickListener(this);
+            mActionButton.setOnClickListener(this);
         }
 
         @Override
