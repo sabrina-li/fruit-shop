@@ -73,6 +73,7 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         new FetchProductListTask().execute(urlStr);
     }
 
+
     @Override
     public void onClick(Product productObj){
         //add 1lb to cart
@@ -92,11 +93,12 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         priceTextView.setText(product.price.toString()+'/'+product.unit);
         layout.addView(priceTextView);
 
-        Button actonBtn = new Button(getContext());
-        actonBtn.setText("Add to Cart");
-        layout.addView(actonBtn);
-
         return layout;
+    }
+
+    @Override
+    public String buttonText(){
+        return getString(R.string.add_to_cart);
     }
 
 

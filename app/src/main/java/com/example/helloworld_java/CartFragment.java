@@ -83,11 +83,12 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         count.setText(product.quantityInCart + " in cart");
         layout.addView(count);
 
-        Button actonBtn = new Button(getContext());
-        actonBtn.setText("Remove from Cart");
-        layout.addView(actonBtn);
-
         return layout;
+    }
+
+    @Override
+    public String buttonText(){
+        return getString(R.string.remove_from_cart);
     }
 
 

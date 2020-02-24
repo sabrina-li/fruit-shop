@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +32,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     public interface ProductAdapterHandler {
         void onClick(Product product);
         View createFragmentSpecificView(Product product);
+        String buttonText();
     }
 
     private final ProductAdapterHandler mHandler;
@@ -59,7 +61,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         fruitAdapterViewHolder.mFruitTextView.setText(product.title);
         fruitAdapterViewHolder.mProductImageView.setImageBitmap(productImg);
         fruitAdapterViewHolder.mFragmentSpecificViewGroup.removeAllViews();
-        Log.d("rvadaper",String.valueOf(product.title+' '+product.unit+' '+product.price+' '+product.unit));
+        fruitAdapterViewHolder.mActionButton.setText(mHandler.buttonText());
         fruitAdapterViewHolder.mFragmentSpecificViewGroup.addView(mHandler.createFragmentSpecificView(product));
     }
 
@@ -110,6 +112,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         public final TextView mFruitTextView;
         public final ImageView mProductImageView;
         public final ViewGroup mFragmentSpecificViewGroup;
+        public final Button mActionButton;
 
 
         public ProductAdapterViewHolder(View view){
@@ -118,6 +121,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
             mFruitTextView = view.findViewById(R.id.tv_product_name);
             mProductImageView = view.findViewById(R.id.iv_product_img);
             mFragmentSpecificViewGroup = view.findViewById(R.id.vg_fragment_specific_view);
+            mActionButton = view.findViewById(R.id.btn_product_action);
 
             FS.addClass(mFruitTextView, FS.UNMASK_CLASS);
             view.setOnClickListener(this);
@@ -132,7 +136,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 
