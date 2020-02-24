@@ -1,35 +1,26 @@
 package com.example.helloworld_java;
 
-import android.app.Application;
-import android.app.ListActivity;
-import android.content.Context;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.helloworld_java.data.AppDatabase;
 import com.example.helloworld_java.data.Product;
 import com.example.helloworld_java.data.ProductDao;
 import com.example.helloworld_java.utilities.NetworkUtils;
 import com.fullstory.FS;
-import com.fullstory.FSSessionData;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +28,8 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     private RecyclerView mRecyclerView;
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
     private ProductDao mProductDao;
-    private List<Product> mProductsList;
+    private ArrayList<Product> mProductsList;
     AppDatabase db;
-
 
 
     @Override
@@ -76,6 +66,11 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     @Override
     public void onClick(Product productObj){
         //add 1lb to cart
+
+        showPopup(getActivity().findViewById(R.id.navigation));
+        getActivity().findViewById(R.id.navigation).showContextMenu();
+
+
         final Product product;
         try {
             product = new Product(productObj.title,productObj.description,productObj.price,productObj.image,productObj.unit,1);
@@ -84,6 +79,36 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
             e.printStackTrace();
         }
     }
+
+
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(getContext(), v);
+
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.navigation, popup.getMenu());
+
+        popup.show();
+
+
+        //Expose the underlying ListView from popupMenu with Reflection
+        try {
+            Object menuHelper;
+
+            Field fMenuHelper = PopupMenu.class.getDeclaredField("mPopup");
+            fMenuHelper.setAccessible(true);
+            menuHelper = fMenuHelper.get(popup);
+
+            View lView  = (View) menuHelper.getClass().getMethod("getListView").invoke(menuHelper);
+
+            FS.addClass(lView,FS.UNMASK_CLASS);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 
     @Override
     public View createFragmentSpecificView(Product product){
@@ -129,7 +154,11 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         @Override
         protected void onPostExecute(Product product){
             if(product != null){
-                Toast.makeText(getContext(),product.title + " added to cart!",Toast.LENGTH_SHORT).show();
+                Toast t=Toast.makeText(getContext(),product.title + " added to cart!",Toast.LENGTH_SHORT);
+
+                FS.addClass(t.getView(),FS.UNMASK_CLASS);
+                t.show();
+
             }
         }
     }
