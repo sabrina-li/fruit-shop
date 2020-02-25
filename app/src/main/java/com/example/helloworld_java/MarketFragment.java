@@ -3,6 +3,7 @@ package com.example.helloworld_java;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.example.helloworld_java.data.ProductDao;
 import com.example.helloworld_java.utilities.NetworkUtils;
 import com.fullstory.FS;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,21 +86,17 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(getContext(), v);
 
+
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.navigation, popup.getMenu());
 
         popup.show();
 
-
         //Expose the underlying ListView from popupMenu with Reflection
         try {
-            Object menuHelper;
-
-            Field fMenuHelper = PopupMenu.class.getDeclaredField("mPopup");
-            fMenuHelper.setAccessible(true);
-            menuHelper = fMenuHelper.get(popup);
-
-            View lView  = (View) menuHelper.getClass().getMethod("getListView").invoke(menuHelper);
+            Method m = PopupMenu.class.getDeclaredMethod("getMenuListView");
+            m.setAccessible(true);
+            View lView  = (View) m.invoke(popup);
 
             FS.addClass(lView,FS.UNMASK_CLASS);
 
