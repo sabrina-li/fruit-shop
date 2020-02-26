@@ -2,25 +2,18 @@ package com.example.helloworld_java;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
-import android.widget.Toast;
 
-import com.example.helloworld_java.utilities.NetworkUtils;
+import com.example.helloworld_java.ui.CartFragment;
+import com.example.helloworld_java.ui.MarketFragment;
 import com.fullstory.FS;
 import com.fullstory.FSOnReadyListener;
 import com.fullstory.FSSessionData;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import org.json.JSONArray;
 
 public class MainActivity extends AppCompatActivity implements FSOnReadyListener{
 

@@ -41,7 +41,6 @@ public class Product {
     @ColumnInfo(name = "quantityInCart",defaultValue = "1")
     public int quantityInCart;
 
-
     public Product(String title, String description, Double price, String image, String unit, int quantityInCart) {
             this.title = title;
             this.description = description;

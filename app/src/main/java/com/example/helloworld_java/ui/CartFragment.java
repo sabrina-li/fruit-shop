@@ -1,5 +1,4 @@
-package com.example.helloworld_java;
-
+package com.example.helloworld_java.ui;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,14 +8,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.helloworld_java.ProductRecyclerViewAdapter;
+import com.example.helloworld_java.R;
 import com.example.helloworld_java.data.AppDatabase;
 import com.example.helloworld_java.data.Product;
 import com.example.helloworld_java.data.ProductDao;
@@ -33,7 +37,7 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
     private RecyclerView mRecyclerView;
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
     private ProductDao mProductDao;
-    AppDatabase db;
+    private CartViewModel mCartViewModel;
 
 
     @Override
@@ -48,10 +52,18 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         mFruitRecyclerViewAdapter = new ProductRecyclerViewAdapter(this);
         mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
 
-        db = AppDatabase.getDatabase(getContext());
-        mProductDao = db.productDao();
+//        AppDatabase db = AppDatabase.getDatabase(getContext());
+//        mProductDao = db.productDao();
 
-        showCartList();
+        new ViewModelProvider(this).get(CartViewModel.class);
+        mCartViewModel.getAllWords().observe(getActivity(), new Observer<List<Product>>() {
+            @Override
+            public void onChanged(@Nullable final List<Product> products) {
+                // Update the cached copy of the words in the adapter.
+                mFruitRecyclerViewAdapter.setProductList(products);
+            }
+        });
+//        showCartList();
     }
 
     @Override
@@ -62,9 +74,9 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
     }
 
 
-    private void showCartList() {
-        new FetchCartFromDBTask().execute();//fetch all from DB
-    }
+//    private void showCartList() {
+//        new FetchCartFromDBTask().execute();//fetch all from DB
+//    }
 
     @Override
     public void onClick(Product productObj) {
@@ -75,16 +87,6 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        final Product product;
-        try {
-            product = new Product(productObj.title,productObj.description,productObj.price,productObj.image,productObj.unit,1);
-            new RemoveProductFromCartTask().execute(product);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     @Override
@@ -95,56 +97,29 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         count.setText(product.quantityInCart + " in cart");
         layout.addView(count);
 
+        Button actonBtn = new Button(getContext());
+        actonBtn.setText("Remove from Cart");
+        layout.addView(actonBtn);
+
         return layout;
     }
 
-    @Override
-    public String buttonText(){
-        return getString(R.string.remove_from_cart);
-    }
 
-    private class RemoveProductFromCartTask extends  AsyncTask<Product, Void, Product>{
-        @Override
-        protected void onPreExecute(){super.onPreExecute();}
-
-        @Override
-        protected Product doInBackground (final Product... products){
-            if (products.length > 0) {
-                //transaction here
-                db.runInTransaction(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProductDao.delete(products[0]);//Need live data here
-                    }
-                });
-                return products[0];
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Product product){
-            if(product != null){
-                Toast.makeText(getContext(),product.title + " removed from cart!",Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    public class FetchCartFromDBTask extends AsyncTask<Void, Void, ArrayList<Product>> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected ArrayList<Product> doInBackground(Void... params) {
-            return (ArrayList<Product>) mProductDao.getAll();
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Product> productsList) {
-            String imgBaseURLStr = getString(R.string.img_host);
-            mFruitRecyclerViewAdapter.setProductList(productsList, imgBaseURLStr);
-        }
-    }
+//    public class FetchCartFromDBTask extends AsyncTask<Void, Void, ArrayList<Product>> {
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected ArrayList<Product> doInBackground(Void... params) {
+//            return (ArrayList<Product>) mProductDao.getAll();
+//        }
+//
+//        @Override
+//        protected void onPostExecute(ArrayList<Product> productsList) {
+//            String imgBaseURLStr = getString(R.string.img_host);
+//            mFruitRecyclerViewAdapter.setProductList(productsList, imgBaseURLStr);
+//        }
+//    }
 }

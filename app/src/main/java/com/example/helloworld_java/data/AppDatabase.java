@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 
 @Database(entities = {Product.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
+
     public abstract ProductDao productDao();
 
     private static volatile AppDatabase INSTANCE;
