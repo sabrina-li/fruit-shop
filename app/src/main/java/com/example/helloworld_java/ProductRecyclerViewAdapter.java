@@ -33,7 +33,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     public interface ProductAdapterHandler {
         void onClick(Product product);
         View createFragmentSpecificView(Product product);
-//        String buttonText();
+        String buttonText();
     }
 
     private final ProductAdapterHandler mHandler;
@@ -57,52 +57,55 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
     @Override
     public void onBindViewHolder(final ProductAdapterViewHolder fruitAdapterViewHolder, int pos){
-        if (mProducts != null) {
-            Product current = mProducts.get(pos);
-            fruitAdapterViewHolder.mFruitTextView.setText(current.title);
-        } else {
-            // Covers the case of data not being ready yet.
-            fruitAdapterViewHolder.mFruitTextView.setText("No Product found in Cart");
+//        if (mProducts != null) {
+//            Product current = mProducts.get(pos);
+//            fruitAdapterViewHolder.mFruitTextView.setText(current.title);
+//        } else {
+//            // Covers the case of data not being ready yet.
+//            fruitAdapterViewHolder.mFruitTextView.setText("No Product found in Cart");
+//        }
+        Product product = mProductsListArr.get(pos);
+        if(mImgBmList!=null && mImgBmList.size()>pos){
+            Bitmap productImg = mImgBmList.get(pos);
+            fruitAdapterViewHolder.mProductImageView.setImageBitmap(productImg);
         }
-//        Product product = mProductsListArr.get(pos);
-//        Bitmap productImg = mImgBmList.get(pos);
-//        fruitAdapterViewHolder.mFruitTextView.setText(product.title);
-//        fruitAdapterViewHolder.mProductImageView.setImageBitmap(productImg);
-//        fruitAdapterViewHolder.mFragmentSpecificViewGroup.removeAllViews();
-//        Log.d("rvadaper",String.valueOf(product.title+' '+product.unit+' '+product.price+' '+product.unit));
-//        fruitAdapterViewHolder.mFragmentSpecificViewGroup.addView(mHandler.createFragmentSpecificView(product));
 
+        fruitAdapterViewHolder.mFruitTextView.setText(product.title);
+        fruitAdapterViewHolder.mActionButton.setText(mHandler.buttonText());
+
+        fruitAdapterViewHolder.mFragmentSpecificViewGroup.removeAllViews();
+        fruitAdapterViewHolder.mFragmentSpecificViewGroup.addView(mHandler.createFragmentSpecificView(product));
     }
 
     @Override
     public int getItemCount(){
-//        if (null == mProductsListArr || null ==mImgBmList) return 0;
-//        return Math.min(mProductsListArr.size(),mImgBmList.size());
-        if (mProducts != null)
-            return mProducts.size();
-        else return 0;
+        if (null == mProductsListArr ) return 0;
+        return mProductsListArr.size();
+//        if (mProducts != null)
+//            return mProducts.size();
+//        else return 0;
     }
 
 
     public void setProductList(List<Product> products){
-        mProducts = products;
+        mProductsListArr = products;
         notifyDataSetChanged();
     }
 
-//    public void setProductList(List productsListArr, String imgBaseURLStr){
-//        mProductsListArr = productsListArr;
-//        try{
-//            for(int i = 0, count = productsListArr.size(); i< count; i++) {
-//                Product product = (Product) productsListArr.get(i);
-//                mProductsListArr.add(product);
-//                new FetchProductImgTask().execute(imgBaseURLStr+product.image);
-//            }
-//        }catch (Exception e){
-//            //handle exception
-//            e.printStackTrace();
-//        }
-//        notifyDataSetChanged();
-//    }
+    public void setProductList(List productsListArr, String imgBaseURLStr){
+        mProductsListArr = productsListArr;
+        try{
+            for(int i = 0, count = productsListArr.size(); i< count; i++) {
+                Product product = (Product) productsListArr.get(i);
+                mProductsListArr.add(product);
+                new FetchProductImgTask().execute(imgBaseURLStr+product.image);
+            }
+        }catch (Exception e){
+            //handle exception
+            e.printStackTrace();
+        }
+        notifyDataSetChanged();
+    }
 
 
     public class FetchProductImgTask extends AsyncTask<String, Void, Bitmap>{

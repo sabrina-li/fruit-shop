@@ -29,6 +29,7 @@ public final class NetworkUtils {
         Scanner scanner = null;
         JSONArray productArr = null;
         ArrayList<Product> productList = new ArrayList<>();
+        Log.d("here","here");
 
         try {
             URL url = new URL(urlStr);
@@ -44,13 +45,13 @@ public final class NetworkUtils {
                 }
             }
 
+            Log.d("here","json"+String.valueOf(productArr));
             productArr = new JSONArray(jsonResStr);
             if (productArr != null) {
                 for (int i=0;i<productArr.length();i++){
                     JSONObject p = productArr.getJSONObject(i);
                     productList.add (new Product(p.getString("title"), p.getString("description"),
                             p.getDouble("price"), p.getString("image") , p.getString("quantity"), 0));
-
                 }
             }
 

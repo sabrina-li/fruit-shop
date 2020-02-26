@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -20,7 +21,7 @@ public interface ProductDao {
     LiveData<List<Product>> getAll();
 
     @Query("SELECT * FROM product WHERE title IN (:productTitles)")
-    LiveData<List<Product>> loadAllByTitles(String... productTitles);
+    List<Product> loadAllByTitles(String... productTitles);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Product... products);

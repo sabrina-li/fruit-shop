@@ -2,6 +2,7 @@ package com.example.helloworld_java.ui;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,18 +53,6 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
 
         mFruitRecyclerViewAdapter = new ProductRecyclerViewAdapter(this);
         mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
-
-//        AppDatabase db = AppDatabase.getDatabase(getContext());
-//        mProductDao = db.productDao();
-
-        new ViewModelProvider(this).get(CartViewModel.class);
-        mCartViewModel.getAllWords().observe(getActivity(), new Observer<List<Product>>() {
-            @Override
-            public void onChanged(@Nullable final List<Product> products) {
-                // Update the cached copy of the words in the adapter.
-                mFruitRecyclerViewAdapter.setProductList(products);
-            }
-        });
 //        showCartList();
     }
 
@@ -70,7 +60,22 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_cart, container, false);
+//        mCartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
+        mCartViewModel = ViewModelProviders.of(this).get(CartViewModel.class);
+        Log.d("here","cart frag  "+String.valueOf(mCartViewModel));
+        View root =inflater.inflate(R.layout.fragment_cart, container, false);
+
+        mCartViewModel.getAll().observe(this, new Observer<List<Product>>() {
+            @Override
+            public void onChanged(@Nullable List<Product> products) {
+                Log.d("here","onchange "+ String.valueOf(products.get(0).title));
+                // Update the cached copy of the words in the adapter.
+                mFruitRecyclerViewAdapter.setProductList(products);
+            }
+        });
+
+
+        return root;
     }
 
 
@@ -88,6 +93,9 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
             e.printStackTrace();
         }
     }
+    public String buttonText(){
+        return "remove from cart";
+    }
 
     @Override
     public View createFragmentSpecificView(Product product){
@@ -96,10 +104,6 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         TextView count = new TextView(getContext());
         count.setText(product.quantityInCart + " in cart");
         layout.addView(count);
-
-        Button actonBtn = new Button(getContext());
-        actonBtn.setText("Remove from Cart");
-        layout.addView(actonBtn);
 
         return layout;
     }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,16 +66,15 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
 
     private void showFruitList(){
         String urlStr = getString(R.string.aws_host);
-//        new FetchProductListTask().execute(urlStr);
+        new FetchProductListTask().execute(urlStr);
     }
 
+    public String buttonText(){
+        return "Add to cart";
+    }
     @Override
     public void onClick(Product productObj){
         //add 1lb to cart
-
-        showPopup(getActivity().findViewById(R.id.navigation));
-        getActivity().findViewById(R.id.navigation).showContextMenu();
-
 
         final Product product;
         try {
@@ -85,42 +85,12 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         }
     }
 
-
-    public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(getContext(), v);
-
-
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.navigation, popup.getMenu());
-
-        popup.show();
-
-        //Expose the underlying ListView from popupMenu with Reflection
-        try {
-            Method m = PopupMenu.class.getDeclaredMethod("getMenuListView");
-            m.setAccessible(true);
-            View lView  = (View) m.invoke(popup);
-
-            FS.addClass(lView,FS.UNMASK_CLASS);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
-
     @Override
     public View createFragmentSpecificView(Product product){
         LinearLayout layout = new LinearLayout(getContext());
         TextView priceTextView = new TextView(getContext());
         priceTextView.setText(product.price.toString()+'/'+product.unit);
         layout.addView(priceTextView);
-
-        Button actonBtn = new Button(getContext());
-        actonBtn.setText("Add to Cart");
-        layout.addView(actonBtn);
 
         return layout;
     }
@@ -132,23 +102,23 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
 
         @Override
         protected Product doInBackground (final Product... products){
-//            if (products.length > 0) {
-//                //transaction here
-//                db.runInTransaction(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        List<Product> productInCart = mProductDao.loadAllByTitles(products[0].title);
-//                        if(productInCart.size()>0){
-//                            productInCart.get(0).quantityInCart++;
-//                            mProductDao.updateQuantityInCart(productInCart.get(0));
-//                        }else {
-//                            mProductDao.insertAll(products[0]);
-//                        }
-//
-//                    }
-//                });
-//                return products[0];
-//            }
+            if (products.length > 0) {
+                //transaction here
+                db.runInTransaction(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<Product> productInCart = mProductDao.loadAllByTitles(products[0].title);
+                        if(productInCart.size()>0){
+                            productInCart.get(0).quantityInCart++;
+                            mProductDao.updateQuantityInCart(productInCart.get(0));
+                        }else {
+                            mProductDao.insertAll(products[0]);
+                        }
+
+                    }
+                });
+                return products[0];
+            }
             return null;
         }
 
@@ -163,25 +133,26 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
             }
         }
     }
-//    private class FetchProductListTask extends AsyncTask<String, Void, ArrayList<Product>> {
-//        @Override
-//        protected void onPreExecute(){
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected ArrayList<Product> doInBackground(String... urlStr){
-//            if (urlStr.length > 0) {
-//                return NetworkUtils.getProductJSONfromURL(urlStr[0]);
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(ArrayList<Product> productsListArr){
-//            String imgBaseURLStr = getString(R.string.img_host);
-//            mProductsList = productsListArr;
-//            mFruitRecyclerViewAdapter.setProductList(productsListArr,imgBaseURLStr);
-//        }
-//    }
+    private class FetchProductListTask extends AsyncTask<String, Void, ArrayList<Product>> {
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+        }
+
+        @Override
+        protected ArrayList<Product> doInBackground(String... urlStr){
+            if (urlStr.length > 0) {
+                return NetworkUtils.getProductJSONfromURL(urlStr[0]);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Product> productsListArr){
+            Log.d("here","marketfrag "+String.valueOf(mProductsList));
+            String imgBaseURLStr = getString(R.string.img_host);
+            mProductsList = productsListArr;
+            mFruitRecyclerViewAdapter.setProductList(productsListArr,imgBaseURLStr);
+        }
+    }
 }

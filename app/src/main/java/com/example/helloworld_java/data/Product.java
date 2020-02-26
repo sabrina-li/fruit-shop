@@ -49,4 +49,7 @@ public class Product {
             this.unit = unit;
             this.quantityInCart=quantityInCart;
     }
+
+    public Product getProduct(){return this;}
+
 }

@@ -1,8 +1,12 @@
 package com.example.helloworld_java.data;
 
 import android.app.Application;
+import android.util.Log;
 
+import androidx.annotation.Nullable;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import java.util.List;
 
@@ -19,11 +23,13 @@ public class ProductRepository {
         AppDatabase db = AppDatabase.getDatabase(application);
         mProductDao = db.productDao();
         mAllProducts = mProductDao.getAll();
+        Log.d("here","repo constructor "+String.valueOf(mAllProducts.getValue()));
     }
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    public LiveData<List<Product>> getAllProducts() {
+    public LiveData<List<Product>> getAll() {
+        Log.d("here","repo getall"+String.valueOf(mAllProducts.getValue()));
         return mAllProducts;
     }
 

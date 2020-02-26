@@ -42,17 +42,13 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview-selection:1.1.0-rc01'
 
     def room_version = "2.2.3"
-    def arch_lifecycleVersion = '2.2.0'
-    def core_testing_version = '2.1.0'
-    def material_version = '1.0.0'
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
     androidTestImplementation "androidx.room:room-testing:$room_version"
     // Lifecycle components
-    implementation "androidx.lifecycle:lifecycle-extensions:$arch_lifecycleVersion"
-    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$arch_lifecycleVersion"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     // UI
-    implementation "com.google.android.material:material:$material_version"
+    implementation 'com.google.android.material:material:1.0.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
