@@ -34,6 +34,7 @@ public final class NetworkUtils {
             URL url = new URL(urlStr);
             connection = (HttpURLConnection) url.openConnection();
 
+            Log.d("here",String.valueOf(connection.getResponseCode()));
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 stream = connection.getInputStream();
                 scanner = new Scanner(stream);
@@ -42,6 +43,8 @@ public final class NetworkUtils {
                 if (hasInput) {
                     jsonResStr = scanner.next();
                 }
+            }else{
+                Log.d("here","errre");
             }
 
             productArr = new JSONArray(jsonResStr);
@@ -52,10 +55,7 @@ public final class NetworkUtils {
                             p.getDouble("price"), p.getString("image") , p.getString("quantity"), 0));
                 }
             }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (JSONException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
             try{

@@ -23,13 +23,11 @@ public class ProductRepository {
         AppDatabase db = AppDatabase.getDatabase(application);
         mProductDao = db.productDao();
         mAllProducts = mProductDao.getAll();
-        Log.d("here","repo constructor "+String.valueOf(mAllProducts.getValue()));
     }
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
     public LiveData<List<Product>> getAll() {
-        Log.d("here","repo getall"+String.valueOf(mAllProducts.getValue()));
         return mAllProducts;
     }
 
@@ -39,5 +37,40 @@ public class ProductRepository {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             mProductDao.insertAll(product);
         });
+    }
+
+    public boolean updateQuantityInCartByOne(Product product,boolean isAdd){
+        List<Product>  p = mProductDao.getAllByTitles(product.title);
+        if(isAdd){
+            if(p.size()>0){
+                p.get(0).quantityInCart++;
+                AppDatabase.databaseWriteExecutor.execute(() -> {
+                    mProductDao.updateQuantityInCart(p.get(0));
+                });
+                return true;
+            }else{
+                AppDatabase.databaseWriteExecutor.execute(() -> {
+                    mProductDao.insertAll(product);
+                });
+                return true;
+            }
+        }else{
+            if(p.size()>0 && p.get(0).quantityInCart > 1){
+                p.get(0).quantityInCart--;
+                AppDatabase.databaseWriteExecutor.execute(() -> {
+                    mProductDao.updateQuantityInCart(p.get(0));
+                });
+                return true;
+            }else if(p.size()>0 && p.get(0).quantityInCart == 1){
+                AppDatabase.databaseWriteExecutor.execute(() -> {
+                    mProductDao.delete(product);
+                });
+                return true;
+            }else{
+                Log.e("ProductRepository","trying to remove a product that's not in cart");
+                return false;
+            }
+        }
+
     }
 }

@@ -82,9 +82,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     public int getItemCount(){
         if (null == mProductsListArr ) return 0;
         return mProductsListArr.size();
-//        if (mProducts != null)
-//            return mProducts.size();
-//        else return 0;
     }
 
 
@@ -93,19 +90,19 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         notifyDataSetChanged();
     }
 
-    public void setProductList(List productsListArr, String imgBaseURLStr){
-        mProductsListArr = productsListArr;
-        try{
-            for(int i = 0, count = productsListArr.size(); i< count; i++) {
-                Product product = (Product) productsListArr.get(i);
-                mProductsListArr.add(product);
-            }
-        }catch (Exception e){
-            //handle exception
-            e.printStackTrace();
-        }
-        notifyDataSetChanged();
-    }
+//    public void setProductList(List productsListArr, String imgBaseURLStr){
+//        mProductsListArr = productsListArr;
+//        try{
+//            for(int i = 0, count = productsListArr.size(); i< count; i++) {
+//                Product product = (Product) productsListArr.get(i);
+//                mProductsListArr.add(product);
+//            }
+//        }catch (Exception e){
+//            //handle exception
+//            e.printStackTrace();
+//        }
+//        notifyDataSetChanged();
+//    }
 
 
     public class FetchProductImgTask extends AsyncTask<Product, Void, Bitmap>{

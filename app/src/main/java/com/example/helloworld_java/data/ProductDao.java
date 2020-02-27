@@ -21,7 +21,7 @@ public interface ProductDao {
     LiveData<List<Product>> getAll();
 
     @Query("SELECT * FROM product WHERE title IN (:productTitles)")
-    List<Product> loadAllByTitles(String... productTitles);
+    List<Product> getAllByTitles(String... productTitles);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Product... products);

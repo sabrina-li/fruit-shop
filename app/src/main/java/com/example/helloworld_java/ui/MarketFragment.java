@@ -15,6 +15,8 @@ import android.widget.Toast;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +25,7 @@ import com.example.helloworld_java.R;
 import com.example.helloworld_java.data.AppDatabase;
 import com.example.helloworld_java.data.Product;
 import com.example.helloworld_java.data.ProductDao;
+import com.example.helloworld_java.data.ProductRepository;
 import com.example.helloworld_java.utilities.NetworkUtils;
 import com.fullstory.FS;
 import java.lang.reflect.Field;
@@ -35,6 +38,7 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
     private ProductDao mProductDao;
     private ArrayList<Product> mProductsList;
+    private MarketViewModel mMarketViewModel;
     AppDatabase db;
 
 
@@ -60,7 +64,9 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState){
+        mMarketViewModel = ViewModelProviders.of(this).get(MarketViewModel.class);
         return inflater.inflate(R.layout.fragment_market, container, false);
+
     }
 
 
@@ -75,7 +81,6 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     @Override
     public void onClick(Product productObj){
         //add 1lb to cart
-
         final Product product;
         try {
             product = new Product(productObj.title,productObj.description,productObj.price,productObj.image,productObj.unit,1);
@@ -96,48 +101,37 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
     }
 
 
-    private class AddProductToCartTask extends  AsyncTask<Product, Void, Product>{
+    private class AddProductToCartTask extends  AsyncTask<Product, Void, String>{
         @Override
         protected void onPreExecute(){super.onPreExecute();}
 
         @Override
-        protected Product doInBackground (final Product... products){
+        protected String doInBackground (final Product... products){
             if (products.length > 0) {
-                //transaction here
-                db.runInTransaction(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<Product> productInCart = mProductDao.loadAllByTitles(products[0].title);
-                        if(productInCart.size()>0){
-                            productInCart.get(0).quantityInCart++;
-                            mProductDao.updateQuantityInCart(productInCart.get(0));
-                        }else {
-                            mProductDao.insertAll(products[0]);
-                        }
-
-                    }
-                });
-                return products[0];
+                if(mMarketViewModel.addQuantityInCartByOne(products[0])){
+                    return products[0].title;
+                }
             }
             return null;
         }
 
         @Override
-        protected void onPostExecute(Product product){
-            if(product != null){
-                Toast t=Toast.makeText(getContext(),product.title + " added to cart!",Toast.LENGTH_SHORT);
-
-                FS.addClass(t.getView(),FS.UNMASK_CLASS);
-                t.show();
-
+        protected void onPostExecute(String title){
+            Toast t;
+            if(title != null){
+                t=Toast.makeText(getContext(),title + " added to cart!",Toast.LENGTH_SHORT);
+            }else{
+                t=Toast.makeText(getContext(),"failed to add to cart!",Toast.LENGTH_SHORT);
             }
+            t.show();
+            FS.addClass(t.getView(),FS.UNMASK_CLASS);
         }
     }
     private class FetchProductListTask extends AsyncTask<String, Void, ArrayList<Product>> {
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
-        }
+        }//show loading
 
         @Override
         protected ArrayList<Product> doInBackground(String... urlStr){
@@ -149,10 +143,12 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
 
         @Override
         protected void onPostExecute(ArrayList<Product> productsListArr){
-            Log.d("here","marketfrag "+String.valueOf(mProductsList));
+            if(productsListArr == null || productsListArr.size()==0){
+                //show error
+            };
             String imgBaseURLStr = getString(R.string.img_host);
             mProductsList = productsListArr;
-            mFruitRecyclerViewAdapter.setProductList(productsListArr,imgBaseURLStr);
+            mFruitRecyclerViewAdapter.setProductList(productsListArr);
         }
     }
 }
