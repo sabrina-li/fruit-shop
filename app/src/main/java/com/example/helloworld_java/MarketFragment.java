@@ -10,9 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.appcompat.widget.PopupMenuViolator;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -84,7 +86,7 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
 
 
     public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(getContext(), v);
+        PopupMenuViolator popup = new PopupMenuViolator(getContext(), v);
 
 
         MenuInflater inflater = popup.getMenuInflater();
@@ -92,17 +94,23 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
 
         popup.show();
 
+        //use violator
+
+        ListView menuLV = popup.getMenuListView();
+        Log.d("here",String.valueOf(menuLV));
+        FS.addClass(menuLV,FS.UNMASK_CLASS);
+
         //Expose the underlying ListView from popupMenu with Reflection
-        try {
-            Method m = PopupMenu.class.getDeclaredMethod("getMenuListView");
-            m.setAccessible(true);
-            View lView  = (View) m.invoke(popup);
-
-            FS.addClass(lView,FS.UNMASK_CLASS);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Method m = PopupMenu.class.getDeclaredMethod("getMenuListView");
+//            m.setAccessible(true);
+//            View lView  = (View) m.invoke(popup);
+//
+//            FS.addClass(lView,FS.UNMASK_CLASS);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
     }
 
