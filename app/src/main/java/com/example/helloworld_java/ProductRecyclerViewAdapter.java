@@ -29,6 +29,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     private ArrayList<Bitmap> mImgBmList = new ArrayList<>();
     private List<Product> mProductsListArr;
     private List<Product> mProducts;
+    private String imgBaseURLStr;
 
     public interface ProductAdapterHandler {
         void onClick(Product product);
@@ -50,7 +51,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         int layoutForListItem = R.layout.product_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
-
+        imgBaseURLStr = context.getString(R.string.img_host);
         View view = inflater.inflate(layoutForListItem, viewGroup, shouldAttachToParentImmediately);
         return new ProductAdapterViewHolder(view);
     }
@@ -65,10 +66,10 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 //            fruitAdapterViewHolder.mFruitTextView.setText("No Product found in Cart");
 //        }
         Product product = mProductsListArr.get(pos);
-        if(mImgBmList!=null && mImgBmList.size()>pos){
-            Bitmap productImg = mImgBmList.get(pos);
-            fruitAdapterViewHolder.mProductImageView.setImageBitmap(productImg);
-        }
+
+        new FetchProductImgTask(fruitAdapterViewHolder.mProductImageView).execute(product);
+//        setImageBitmap(productImg);
+
 
         fruitAdapterViewHolder.mFruitTextView.setText(product.title);
         fruitAdapterViewHolder.mActionButton.setText(mHandler.buttonText());
@@ -98,7 +99,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
             for(int i = 0, count = productsListArr.size(); i< count; i++) {
                 Product product = (Product) productsListArr.get(i);
                 mProductsListArr.add(product);
-                new FetchProductImgTask().execute(imgBaseURLStr+product.image);
             }
         }catch (Exception e){
             //handle exception
@@ -108,24 +108,31 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     }
 
 
-    public class FetchProductImgTask extends AsyncTask<String, Void, Bitmap>{
+    public class FetchProductImgTask extends AsyncTask<Product, Void, Bitmap>{
+        ImageView imgView;
+
+        FetchProductImgTask(ImageView imgView) {
+            this.imgView = imgView;
+        }
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
         }
 
         @Override
-        protected Bitmap doInBackground(String... urlStr){
-            if (urlStr.length > 0) {
-                return NetworkUtils.getImageForProduct(urlStr[0]);
+        protected Bitmap doInBackground(Product... product){
+            if (product.length > 0 && product[0].image!=null) {
+                String urlStr = imgBaseURLStr + product[0].image;
+                return NetworkUtils.getImageForProduct(urlStr);
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Bitmap imgBm){
-            mImgBmList.add(imgBm);
-            notifyDataSetChanged();//probably needs optimize?
+//            if(imgBm == null) set default image
+            imgView.setImageBitmap(imgBm);
+
         }
     }
 
@@ -143,10 +150,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
             mProductImageView = view.findViewById(R.id.iv_product_img);
             mFragmentSpecificViewGroup = view.findViewById(R.id.vg_fragment_specific_view);
             mActionButton = view.findViewById(R.id.btn_product_action);
-
-
-
-
 
             FS.addClass(mFruitTextView, FS.UNMASK_CLASS);
             mActionButton.setOnClickListener(this);

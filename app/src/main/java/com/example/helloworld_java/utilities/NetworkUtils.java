@@ -29,7 +29,6 @@ public final class NetworkUtils {
         Scanner scanner = null;
         JSONArray productArr = null;
         ArrayList<Product> productList = new ArrayList<>();
-        Log.d("here","here");
 
         try {
             URL url = new URL(urlStr);
@@ -45,7 +44,6 @@ public final class NetworkUtils {
                 }
             }
 
-            Log.d("here","json"+String.valueOf(productArr));
             productArr = new JSONArray(jsonResStr);
             if (productArr != null) {
                 for (int i=0;i<productArr.length();i++){
@@ -61,9 +59,9 @@ public final class NetworkUtils {
             ex.printStackTrace();
         } finally {
             try{
-                scanner.close();
-                stream.close();
-                connection.disconnect();
+                if(scanner!=null) scanner.close();
+                if(stream!=null) stream.close();
+                if(connection!=null) connection.disconnect();
             }catch (IOException e){
                 e.printStackTrace();
             }
@@ -91,8 +89,8 @@ public final class NetworkUtils {
             ex.printStackTrace();
         }finally {
             try{
-                stream.close();
-                connection.disconnect();
+                if(stream!=null) stream.close();
+                if(connection!=null) connection.disconnect();
             }catch (IOException e){
                 e.printStackTrace();
             }
