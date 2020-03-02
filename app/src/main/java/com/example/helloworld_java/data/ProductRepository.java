@@ -33,17 +33,21 @@ public class ProductRepository {
 
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
-    public void insertAll(Product product) {
+    public void insert(Product product) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             mProductDao.insert(product);
         });
     }
 
     public void increaseQuantityInCart(Product product){
+//        AppDatabase.databaseWriteExecutor.execute(() -> {
             mProductDao.increaseQuantityOrInsert(product);
+//        });
     }
 
     public void decreaseQuantityInCart(Product product){
+        AppDatabase.databaseWriteExecutor.execute(() -> {
             mProductDao.decreaseQuantityOrDelete(product);
+        });
     }
 }

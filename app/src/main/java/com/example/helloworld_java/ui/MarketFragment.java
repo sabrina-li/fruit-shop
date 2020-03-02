@@ -24,7 +24,7 @@ import com.example.helloworld_java.ProductRecyclerViewAdapter;
 import com.example.helloworld_java.R;
 import com.example.helloworld_java.data.AppDatabase;
 import com.example.helloworld_java.data.Product;
-import com.example.helloworld_java.data.ProductDao;
+//import com.example.helloworld_java.data.ProductDao;
 import com.example.helloworld_java.data.ProductRepository;
 import com.example.helloworld_java.utilities.NetworkUtils;
 import com.fullstory.FS;
@@ -36,7 +36,7 @@ import java.util.List;
 public class MarketFragment extends Fragment implements ProductRecyclerViewAdapter.ProductAdapterHandler {
     private RecyclerView mRecyclerView;
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
-    private ProductDao mProductDao;
+//    private ProductDao mProductDao;
     private ArrayList<Product> mProductsList;
     private MarketViewModel mMarketViewModel;
     AppDatabase db;
@@ -55,7 +55,7 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
 
         db = AppDatabase.getDatabase(getContext());
-        mProductDao = db.productDao();
+//        mProductDao = db.productDao();
 
         showFruitList();
     }

@@ -27,7 +27,7 @@ public class CartViewModel extends AndroidViewModel {
 
     public LiveData<List<Product>> getAll() { return mAllProducts; }
 
-    public void insert(Product product) { mRepository.insertAll(product); }
+    public void insert(Product product) { mRepository.insert(product); }
 
     public void reduceQuantityInCartByOne(Product product) { mRepository.decreaseQuantityInCart(product); }
 }

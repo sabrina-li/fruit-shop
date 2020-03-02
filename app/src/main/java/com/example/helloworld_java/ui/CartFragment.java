@@ -25,7 +25,7 @@ import com.example.helloworld_java.ProductRecyclerViewAdapter;
 import com.example.helloworld_java.R;
 import com.example.helloworld_java.data.AppDatabase;
 import com.example.helloworld_java.data.Product;
-import com.example.helloworld_java.data.ProductDao;
+//import com.example.helloworld_java.data.ProductDao;
 import com.example.helloworld_java.data.ProductRepository;
 import com.example.helloworld_java.utilities.NetworkUtils;
 import com.fullstory.FS;
@@ -40,7 +40,7 @@ import java.util.List;
 public class CartFragment extends Fragment implements ProductRecyclerViewAdapter.ProductAdapterHandler {
     private RecyclerView mRecyclerView;
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
-    private ProductDao mProductDao;
+//    private ProductDao mProductDao;
     private CartViewModel mCartViewModel;
 
 
@@ -85,7 +85,8 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
     @Override
     public void onClick(Product productObj) {
         try {
-            new RemoveProductToCartTask().execute(productObj);
+//            new RemoveProductToCartTask().execute(productObj);
+            mCartViewModel.reduceQuantityInCartByOne(productObj);
         } catch (Exception e) {
             e.printStackTrace();
         }
