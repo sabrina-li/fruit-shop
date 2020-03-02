@@ -29,5 +29,5 @@ public class CartViewModel extends AndroidViewModel {
 
     public void insert(Product product) { mRepository.insertAll(product); }
 
-    public boolean reduceQuantityInCartByOne(Product product) { return mRepository.updateQuantityInCartByOne(product,false); }
+    public void reduceQuantityInCartByOne(Product product) { mRepository.decreaseQuantityInCart(product); }
 }

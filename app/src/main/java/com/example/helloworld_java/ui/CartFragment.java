@@ -114,9 +114,8 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         @Override
         protected String doInBackground (final Product... products){
             if (products.length > 0) {
-                if(mCartViewModel.reduceQuantityInCartByOne(products[0])){
-                    return products[0].title;
-                }
+                mCartViewModel.reduceQuantityInCartByOne(products[0]);
+                return products[0].title;
             }
             return null;
         }

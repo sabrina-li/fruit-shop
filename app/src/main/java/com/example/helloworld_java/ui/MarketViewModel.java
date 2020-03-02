@@ -25,5 +25,5 @@ public class MarketViewModel extends AndroidViewModel {
 
     public LiveData<List<Product>> getAll() { return mAllProducts; }
 
-    public boolean addQuantityInCartByOne(Product product) { return mRepository.updateQuantityInCartByOne(product,true); }
+    public void addQuantityInCartByOne(Product product) {  Log.d("here","addQuantityInCartByOne"); mRepository.increaseQuantityInCart(product); }
 }

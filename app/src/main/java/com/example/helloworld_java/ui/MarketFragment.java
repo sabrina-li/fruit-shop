@@ -108,9 +108,8 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
         @Override
         protected String doInBackground (final Product... products){
             if (products.length > 0) {
-                if(mMarketViewModel.addQuantityInCartByOne(products[0])){
-                    return products[0].title;
-                }
+                mMarketViewModel.addQuantityInCartByOne(products[0]);
+                return products[0].title;
             }
             return null;
         }
