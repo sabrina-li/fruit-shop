@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 /app/src/main/res/values/hosts.xml
+*/google-services.json

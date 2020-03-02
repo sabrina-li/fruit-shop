@@ -24,14 +24,10 @@ import com.example.helloworld_java.ProductRecyclerViewAdapter;
 import com.example.helloworld_java.R;
 import com.example.helloworld_java.data.AppDatabase;
 import com.example.helloworld_java.data.Product;
-//import com.example.helloworld_java.data.ProductDao;
-import com.example.helloworld_java.data.ProductRepository;
 import com.example.helloworld_java.utilities.NetworkUtils;
 import com.fullstory.FS;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class MarketFragment extends Fragment implements ProductRecyclerViewAdapter.ProductAdapterHandler {
     private RecyclerView mRecyclerView;
@@ -58,6 +54,18 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
 //        mProductDao = db.productDao();
 
         showFruitList();
+
+        Button crashButton = new Button(getContext());
+        crashButton.setText("Crash!");
+        crashButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                throw new RuntimeException("Test Crash"); // Force a crash
+            }
+        });
+
+        getActivity().addContentView(crashButton, new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     @Override

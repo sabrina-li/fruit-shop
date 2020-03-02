@@ -1,14 +1,15 @@
 package com.example.helloworld_java;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
 import com.example.helloworld_java.ui.CartFragment;
 import com.example.helloworld_java.ui.CheckoutFragment;
@@ -17,6 +18,10 @@ import com.fullstory.FS;
 import com.fullstory.FSOnReadyListener;
 import com.fullstory.FSSessionData;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements FSOnReadyListener{
 
@@ -25,8 +30,37 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
 
 
     @Override
-    public void onReady(FSSessionData sessionData){
-        Log.d("MainActivity","fullstory sessionurl "+sessionData.getCurrentSessionURL());
+    public void onReady(FSSessionData sessionData) {
+        Log.d("MainActivity", "adding fullstory sessionurl " + sessionData.getCurrentSessionURL());
+
+        // This normally happens on the next time launch, which sends to the wrong FS session
+//        if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution()) {
+//            Log.d("Crashlytics","didCrashOnPreviousExecution");
+//            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+//            String sessionURL = sharedPref.getString("FSSessionURL","unknown");
+//
+//            Map<String,String> crashCustomEvent = new HashMap<>();
+//            crashCustomEvent.put("CrashedSession",sessionURL);
+//            Log.d("fullstory","sending event"+sessionURL);
+//            FS.event("CrashlyticsTest",crashCustomEvent);
+//        }
+
+        //use shared pref to persist session URL
+//        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putString("FSSessionURL", sessionData.getCurrentSessionURL());
+//        editor.commit();
+
+        FirebaseCrashlytics instance = FirebaseCrashlytics.getInstance();
+        Map<String, String> userVar = new HashMap<>();
+        userVar.put("userID", "testuser1");
+
+        instance.setCustomKey("FSSessionURL", sessionData.getCurrentSessionURL());
+        instance.log(sessionData.getCurrentSessionURL());
+        instance.setUserId(userVar.get("userID"));
+
+        FS.identify(userVar.get("userID"));
+        FS.setUserVars(userVar);
     }
 
     @Override
@@ -59,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
                 return true;
             }
         });
-
     }
 
     private boolean loadFragment(Fragment fragment) {
