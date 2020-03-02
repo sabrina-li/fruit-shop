@@ -40,14 +40,10 @@ public class ProductRepository {
     }
 
     public void increaseQuantityInCart(Product product){
-        AppDatabase.databaseWriteExecutor.execute(() -> {
             mProductDao.increaseQuantityOrInsert(product);
-        });
     }
 
     public void decreaseQuantityInCart(Product product){
-        AppDatabase.databaseWriteExecutor.execute(() -> {
             mProductDao.decreaseQuantityOrDelete(product);
-        });
     }
 }

@@ -1,20 +1,15 @@
 package com.example.helloworld_java.data;
 
-        import android.content.Context;
-        import android.content.Intent;
-        import android.util.Log;
+import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
+import androidx.room.Query;
+import androidx.room.Transaction;
+import androidx.room.Update;
 
-        import androidx.lifecycle.LiveData;
-        import androidx.lifecycle.MutableLiveData;
-        import androidx.room.Dao;
-        import androidx.room.Delete;
-        import androidx.room.Insert;
-        import androidx.room.OnConflictStrategy;
-        import androidx.room.Query;
-        import androidx.room.Transaction;
-        import androidx.room.Update;
-
-        import java.util.List;
+import java.util.List;
 
 
 @Dao
@@ -31,7 +26,7 @@ public abstract class ProductDao {
     @Delete
     abstract void delete(Product product);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     abstract void updateProduct(Product product);
 
     @Query("UPDATE product SET quantityInCart = quantityInCart + 1 WHERE title=:title")
@@ -42,9 +37,7 @@ public abstract class ProductDao {
 
     @Transaction
     void increaseQuantityOrInsert(Product product) {
-        Log.d("here",product.title);
         if(increaseQuantity(product.title) == 0){
-            Log.d("here","trying to insert");
             product.quantityInCart =1;
             insert(product);
         }
@@ -52,7 +45,6 @@ public abstract class ProductDao {
     @Transaction
     void decreaseQuantityOrDelete(Product product) {
         Product productInCart = getProductByTitle(product.title);
-        Log.d("here",String.valueOf(productInCart)+' '+productInCart.quantityInCart);
         if(productInCart != null && productInCart.quantityInCart > 1 ){
             decreaseQuantity(product.title);
         }else{
