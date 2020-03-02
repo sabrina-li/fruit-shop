@@ -55,6 +55,14 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
 
         mFruitRecyclerViewAdapter = new ProductRecyclerViewAdapter(this);
         mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
+
+//        Button checkoutBtn = view.findViewById(R.id.btn_checkout);
+//        checkoutBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                loadFragment(checkoutFragment);
+//            }
+//        });
     }
 
     @Override

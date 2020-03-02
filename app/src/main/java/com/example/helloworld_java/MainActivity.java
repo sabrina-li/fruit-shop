@@ -7,8 +7,11 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.example.helloworld_java.ui.CartFragment;
+import com.example.helloworld_java.ui.CheckoutFragment;
 import com.example.helloworld_java.ui.MarketFragment;
 import com.fullstory.FS;
 import com.fullstory.FSOnReadyListener;
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
 
         final Fragment marketFragment = new MarketFragment();
         final Fragment cartFragment = new CartFragment();
+        final Fragment checkoutFragment = new CheckoutFragment();
 
         loadFragment(marketFragment);//default fragment to market
 
