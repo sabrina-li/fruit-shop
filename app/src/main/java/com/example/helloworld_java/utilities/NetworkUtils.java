@@ -52,7 +52,7 @@ public final class NetworkUtils {
                 for (int i=0;i<productArr.length();i++){
                     JSONObject p = productArr.getJSONObject(i);
                     productList.add (new Product(p.getString("title"), p.getString("description"),
-                            p.getDouble("price"), p.getString("image") , p.getString("quantity"), 0));
+                            p.getDouble("price"), p.getString("image") , p.getString("unit"), 0));
                 }
             }
         } catch (Exception ex) {

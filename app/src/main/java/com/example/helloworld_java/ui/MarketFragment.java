@@ -54,18 +54,6 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
 //        mProductDao = db.productDao();
 
         showFruitList();
-
-        Button crashButton = new Button(getContext());
-        crashButton.setText("Crash!");
-        crashButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                throw new RuntimeException("Test Crash"); // Force a crash
-            }
-        });
-
-        getActivity().addContentView(crashButton, new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     @Override

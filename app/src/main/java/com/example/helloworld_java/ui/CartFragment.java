@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +36,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CartFragment extends Fragment implements ProductRecyclerViewAdapter.ProductAdapterHandler {
     private RecyclerView mRecyclerView;
@@ -56,13 +59,23 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         mFruitRecyclerViewAdapter = new ProductRecyclerViewAdapter(this);
         mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
 
-//        Button checkoutBtn = view.findViewById(R.id.btn_checkout);
-//        checkoutBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                loadFragment(checkoutFragment);
-//            }
-//        });
+
+        Button crashButton = new Button(getContext());
+        crashButton.setText("Purchase!");
+        crashButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Map<String,Integer> clickEvent = new HashMap<>();
+                clickEvent.put("itemInCart",10);
+                FS.event("PurchaseClicked",clickEvent);
+
+                throw new RuntimeException("Test Crash"); // Force a crash
+            }
+        });
+
+        FrameLayout layout = (FrameLayout) view.getParent();
+        layout.addView(crashButton, new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     @Override
