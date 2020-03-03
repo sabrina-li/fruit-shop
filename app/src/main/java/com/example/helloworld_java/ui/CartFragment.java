@@ -15,12 +15,14 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.helloworld_java.MainActivity;
 import com.example.helloworld_java.ProductRecyclerViewAdapter;
 import com.example.helloworld_java.R;
 import com.example.helloworld_java.data.AppDatabase;
@@ -42,6 +44,7 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
 //    private ProductDao mProductDao;
     private CartViewModel mCartViewModel;
+    final Fragment checkoutFragment = new CheckoutFragment();
 
 
     @Override
@@ -56,13 +59,16 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         mFruitRecyclerViewAdapter = new ProductRecyclerViewAdapter(this);
         mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
 
-//        Button checkoutBtn = view.findViewById(R.id.btn_checkout);
-//        checkoutBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                loadFragment(checkoutFragment);
-//            }
-//        });
+        Button checkoutBtn = view.findViewById(R.id.btn_checkout);
+        checkoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, checkoutFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
     }
 
     @Override

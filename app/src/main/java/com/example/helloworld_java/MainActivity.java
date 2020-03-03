@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
 
         final Fragment marketFragment = new MarketFragment();
         final Fragment cartFragment = new CartFragment();
-        final Fragment checkoutFragment = new CheckoutFragment();
 
         loadFragment(marketFragment);//default fragment to market
 
@@ -62,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
 
     }
 
-    private boolean loadFragment(Fragment fragment) {
+    public boolean loadFragment(Fragment fragment) {
         //switching fragment
         if (fragment != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
