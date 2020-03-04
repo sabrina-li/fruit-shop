@@ -1,4 +1,4 @@
-package com.example.helloworld_java.data;
+package com.example.starter_proj.data;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;

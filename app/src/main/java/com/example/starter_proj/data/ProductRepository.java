@@ -1,12 +1,8 @@
-package com.example.helloworld_java.data;
+package com.example.starter_proj.data;
 
 import android.app.Application;
-import android.util.Log;
 
-import androidx.annotation.Nullable;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 
 import java.util.List;
 

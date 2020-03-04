@@ -1,23 +1,19 @@
-package com.example.helloworld_java.utilities;
+package com.example.starter_proj.utilities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.example.helloworld_java.data.Product;
+import com.example.starter_proj.data.Product;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public final class NetworkUtils {

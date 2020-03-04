@@ -1,30 +1,25 @@
-package com.example.helloworld_java.ui;
+package com.example.starter_proj.ui;
 
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.widget.PopupMenu;
+
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.helloworld_java.ProductRecyclerViewAdapter;
-import com.example.helloworld_java.R;
-import com.example.helloworld_java.data.AppDatabase;
-import com.example.helloworld_java.data.Product;
-import com.example.helloworld_java.utilities.NetworkUtils;
+import com.example.starter_proj.ProductRecyclerViewAdapter;
+import com.example.starter_proj.R;
+import com.example.starter_proj.data.AppDatabase;
+import com.example.starter_proj.data.Product;
+import com.example.starter_proj.utilities.NetworkUtils;
 import com.fullstory.FS;
 
 import java.util.ArrayList;

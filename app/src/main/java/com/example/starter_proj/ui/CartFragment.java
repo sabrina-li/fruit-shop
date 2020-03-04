@@ -1,10 +1,7 @@
-package com.example.helloworld_java.ui;
+package com.example.starter_proj.ui;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.Log;
-import android.util.LongSparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,25 +14,16 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.helloworld_java.ProductRecyclerViewAdapter;
-import com.example.helloworld_java.R;
-import com.example.helloworld_java.data.AppDatabase;
-import com.example.helloworld_java.data.Product;
+import com.example.starter_proj.ProductRecyclerViewAdapter;
+import com.example.starter_proj.R;
+import com.example.starter_proj.data.Product;
 //import com.example.helloworld_java.data.ProductDao;
-import com.example.helloworld_java.data.ProductRepository;
-import com.example.helloworld_java.utilities.NetworkUtils;
 import com.fullstory.FS;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

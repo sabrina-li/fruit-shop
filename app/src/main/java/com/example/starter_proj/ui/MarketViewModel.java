@@ -1,4 +1,4 @@
-package com.example.helloworld_java.ui;
+package com.example.starter_proj.ui;
 
 import android.app.Application;
 import android.util.Log;
@@ -6,8 +6,8 @@ import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.helloworld_java.data.Product;
-import com.example.helloworld_java.data.ProductRepository;
+import com.example.starter_proj.data.Product;
+import com.example.starter_proj.data.ProductRepository;
 
 import java.util.List;
 

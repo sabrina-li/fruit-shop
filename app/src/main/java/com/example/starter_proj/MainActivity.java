@@ -1,21 +1,18 @@
-package com.example.helloworld_java;
+package com.example.starter_proj;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.helloworld_java.ui.CartFragment;
-import com.example.helloworld_java.ui.CheckoutFragment;
-import com.example.helloworld_java.ui.MarketFragment;
+import com.example.starter_proj.ui.CartFragment;
+import com.example.starter_proj.ui.CheckoutFragment;
+import com.example.starter_proj.ui.MarketFragment;
 import com.fullstory.FS;
 import com.fullstory.FSOnReadyListener;
 import com.fullstory.FSSessionData;
@@ -23,9 +20,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.dynamiclinks.DynamicLink;
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
