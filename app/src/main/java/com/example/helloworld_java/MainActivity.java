@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -22,6 +23,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -33,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
 
     private BottomNavigationView mBottomNavView;
     FirebaseRemoteConfig mFirebaseRemoteConfig;
-
 
     @Override
     public void onReady(FSSessionData sessionData) {
@@ -57,22 +60,58 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
 //        editor.putString("FSSessionURL", sessionData.getCurrentSessionURL());
 //        editor.commit();
 
+
+
         FirebaseCrashlytics instance = FirebaseCrashlytics.getInstance();
         Map<String, String> userVar = new HashMap<>();
-        userVar.put("userID", "testuser1");
-        userVar.put("displayName","crashlytics user");
-        userVar.put("crashlyticsURL","https://console.firebase.google.com/u/0/project/fs-crashlytics/crashlytics/app/android:com.example.helloworld_java/search?time=last-twenty-four-hours&type=crash&q=testuser1");
+        userVar.put("userID", "testuser3");
+        userVar.put("displayName","crashlytics user3");
+        userVar.put("crashlyticsURL","https://console.firebase.google.com/u/0/project/fs-crashlytics/crashlytics/app/android:com.example.helloworld_java/search?time=last-ninety-days&type=crash&q="+userVar.get("userID"));
         //send userVar to FS
         FS.identify(userVar.get("userID"),userVar);
 
         //add FS links to userVar
         userVar.put("FSSessionURL",sessionData.getCurrentSessionURL());
-        userVar.put("FSUserSearchURL","https://app.staging.fullstory.com/ui/56EM/segments/everyone/people:search:(:((UserAppKey:==:%22testuser1%22)):():(((EventType:==:%22crashed%22))):():)/0");
+        userVar.put("FSUserSearchURL","https://app.staging.fullstory.com/ui/56EM/segments/everyone/people:search:(:((UserAppKey:==:%22"+userVar.get("userID")+"%22)):():(((EventType:==:\"crashed\"))):():)/0");
+        userVar.put("FSAllCrashesURL","https://app.staging.fullstory.com/ui/56EM/segments/everyone/people:search:(:():():(((EventType:==:%22crashed%22))):():)/0");
         //send selected userVar fields to FB
         instance.setCustomKey("FSSessionURL", userVar.get("FSSessionURL") );
         instance.setCustomKey("FSUserSearchURL", userVar.get("FSUserSearchURL"));
+        instance.setCustomKey("FSAllCrashesURL", userVar.get("FSAllCrashesURL"));
         instance.log(sessionData.getCurrentSessionURL());
         instance.setUserId(userVar.get("userID"));
+
+
+
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(0)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+
+        if(mFirebaseRemoteConfig!=null){
+            mFirebaseRemoteConfig.fetchAndActivate()
+                    .addOnCompleteListener(this, new OnCompleteListener<Boolean>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Boolean> task) {
+                            if (task.isSuccessful()) {
+                                boolean updated = task.getResult();
+                                Log.d("firebase", "Config params updated: " + mFirebaseRemoteConfig.getString("new"));
+                                Log.d("firebase", "Config params updated: " + mFirebaseRemoteConfig.getString("churnRisk"));
+//                                Toast.makeText(MainActivity.this, "Fetch and activate succeeded",
+//                                        Toast.LENGTH_SHORT).show();
+                                HashMap<String,String> hm = new HashMap<>();
+                                hm.put("new",mFirebaseRemoteConfig.getString("new"));
+                                hm.put("churnRisk",mFirebaseRemoteConfig.getString("churnRisk"));
+                                FS.event("FirebaseRemoteConfig",hm);
+                            } else {
+                                Toast.makeText(MainActivity.this, "Fetch failed",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+
     }
 
     @Override
@@ -114,32 +153,6 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
             }
         });
 
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(30)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-
-        if(mFirebaseRemoteConfig!=null){
-            mFirebaseRemoteConfig.fetchAndActivate()
-                    .addOnCompleteListener(this, new OnCompleteListener<Boolean>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Boolean> task) {
-                            if (task.isSuccessful()) {
-                                boolean updated = task.getResult();
-                                Log.d("firebase", "Config params updated: " + updated);
-                                Toast.makeText(MainActivity.this, "Fetch and activate succeeded",
-                                        Toast.LENGTH_SHORT).show();
-                                HashMap<String,String> hm = new HashMap<>();
-                                hm.put("new",mFirebaseRemoteConfig.getString("new"));
-                                FS.event("FirebaseRemoteConfig",hm);
-                            } else {
-                                Toast.makeText(MainActivity.this, "Fetch failed",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-        }
     }
 
     private boolean loadFragment(Fragment fragment) {
