@@ -23,6 +23,7 @@ import com.example.starter_proj.R;
 import com.example.starter_proj.data.Product;
 //import com.example.helloworld_java.data.ProductDao;
 import com.fullstory.FS;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,15 +49,36 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         mRecyclerView.setAdapter(mFruitRecyclerViewAdapter);
 
 
+        Button purchaseButton = new Button(getContext());
+        purchaseButton.setText("Purchase!");
+        purchaseButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Map<String,Integer> clickEvent = new HashMap<>();
+                clickEvent.put("itemInCart",10);
+                FS.event("PurchaseClicked",clickEvent);
+
+                try {
+                    throw new RuntimeException("Test non-fatal error"); // Force a crash
+                }catch (Exception e){
+                    e.printStackTrace();
+                    FirebaseCrashlytics.getInstance().recordException(e);
+                    Map<String, String> eventVars = new HashMap<>();
+                    eventVars.put("errorMessage", e.getMessage());
+                    FS.event("nonFatalException",eventVars);
+                    FS.log(FS.LogLevel.ERROR,e.getMessage());
+                }
+            }
+        });
+
         Button crashButton = new Button(getContext());
-        crashButton.setText("Purchase!");
+        crashButton.setText("Purchase(Crash!)");
         crashButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Map<String,Integer> clickEvent = new HashMap<>();
                 clickEvent.put("itemInCart",10);
                 FS.event("PurchaseClicked",clickEvent);
 
-                throw new RuntimeException("Test Crash"); // Force a crash
+                throw new RuntimeException("Test Fatal error"); // Force a crash
             }
         });
 

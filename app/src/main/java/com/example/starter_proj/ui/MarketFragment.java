@@ -114,7 +114,7 @@ public class MarketFragment extends Fragment implements ProductRecyclerViewAdapt
                 t=Toast.makeText(getContext(),"failed to add to cart!",Toast.LENGTH_SHORT);
             }
             t.show();
-            FS.addClass(t.getView(),FS.UNMASK_CLASS);
+//            FS.addClass(t.getView(),FS.UNMASK_CLASS);
         }
     }
     private class FetchProductListTask extends AsyncTask<String, Void, ArrayList<Product>> {

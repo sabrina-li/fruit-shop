@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
         userVar.put("userID", "testuser3");
         userVar.put("displayName","crashlytics user3");
         userVar.put("crashlyticsURL","https://console.firebase.google.com/u/0/project/fs-crashlytics/crashlytics/app/android:com.example.helloworld_java/search?time=last-ninety-days&type=crash&q="+userVar.get("userID"));
+        userVar.put("email","testeamil@gmail.com");
         //send userVar to FS
         FS.identify(userVar.get("userID"),userVar);
 
@@ -72,8 +73,24 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
         instance.setCustomKey("FSSessionURL", userVar.get("FSSessionURL") );
         instance.setCustomKey("FSUserSearchURL", userVar.get("FSUserSearchURL"));
         instance.setCustomKey("FSAllCrashesURL", userVar.get("FSAllCrashesURL"));
-        instance.log(sessionData.getCurrentSessionURL());
+//        instance.log(sessionData.getCurrentSessionURL());
         instance.setUserId(userVar.get("userID"));
+
+
+        String fsCustomEventTag = "CrashlyticLog";
+        String logMsg = "Higgs-Boson detected! Bailing out";
+        Map<String, String> eventVars = new HashMap<>();
+        eventVars.put("logMessage", logMsg);
+
+        //send FS even or log to be shown in the playback
+        FS.event(fsCustomEventTag,eventVars);
+        FS.log(FS.LogLevel.INFO, logMsg);
+
+        //Crashlytics:
+        instance.log(logMsg);
+        instance.log("Current FSSessionURL "+ sessionData.getCurrentSessionURL());
+        instance.log("Look for FS event in playback" + fsCustomEventTag);
+
 
 
 
@@ -121,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
         loadFragment(marketFragment);//default fragment to market
 
         mBottomNavView = (BottomNavigationView) findViewById(R.id.navigation);
-        FS.addClass(mBottomNavView,FS.UNMASK_CLASS);
+//        FS.addClass(mBottomNavView,FS.UNMASK_CLASS);
         mBottomNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener(){
             @Override
             public boolean onNavigationItemSelected(MenuItem item){
