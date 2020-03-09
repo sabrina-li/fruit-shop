@@ -14,7 +14,7 @@ fullstory {
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.helloworld_java"
+        applicationId 'com.example.starter_proj'
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1

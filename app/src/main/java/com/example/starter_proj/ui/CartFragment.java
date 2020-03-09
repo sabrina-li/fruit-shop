@@ -71,7 +71,7 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         });
 
         Button crashButton = new Button(getContext());
-        crashButton.setText("Purchase(Crash!)");
+        crashButton.setText("Purchase!");
         crashButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Map<String,Integer> clickEvent = new HashMap<>();
@@ -83,6 +83,9 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         });
 
         FrameLayout layout = (FrameLayout) view.getParent();
+//        layout.addView(purchaseButton, new ViewGroup.LayoutParams(
+//                ViewGroup.LayoutParams.MATCH_PARENT,
+//                ViewGroup.LayoutParams.WRAP_CONTENT));
         layout.addView(crashButton, new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
