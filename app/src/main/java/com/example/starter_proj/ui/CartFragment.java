@@ -2,6 +2,8 @@ package com.example.starter_proj.ui;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +25,13 @@ import com.example.starter_proj.R;
 import com.example.starter_proj.data.Product;
 //import com.example.helloworld_java.data.ProductDao;
 import com.fullstory.FS;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class CartFragment extends Fragment implements ProductRecyclerViewAdapter.ProductAdapterHandler {
     private RecyclerView mRecyclerView;
@@ -57,21 +61,16 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
                 clickEvent.put("itemInCart",10);
                 FS.event("PurchaseClicked",clickEvent);
 
-                try {
-                    throw new RuntimeException("Test non-fatal error"); // Force a crash
-                }catch (Exception e){
-                    e.printStackTrace();
-                    FirebaseCrashlytics.getInstance().recordException(e);
-                    Map<String, String> eventVars = new HashMap<>();
-                    eventVars.put("errorMessage", e.getMessage());
-                    FS.event("nonFatalException",eventVars);
-                    FS.log(FS.LogLevel.ERROR,e.getMessage());
-                }
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "bananas");
+                bundle.putDouble(FirebaseAnalytics.Param.VALUE, 2.99);
+                bundle.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, "shoppe dollar");
+                FirebaseAnalytics.getInstance(getActivity()).logEvent(FirebaseAnalytics.Event.SPEND_VIRTUAL_CURRENCY, bundle);
             }
         });
 
         Button crashButton = new Button(getContext());
-        crashButton.setText("Purchase!");
+        crashButton.setText("Purchase(crash)!");
         crashButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Map<String,Integer> clickEvent = new HashMap<>();
@@ -82,13 +81,36 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
             }
         });
 
-        FrameLayout layout = (FrameLayout) view.getParent();
-//        layout.addView(purchaseButton, new ViewGroup.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT));
-        layout.addView(crashButton, new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
+        Button shareButton = new Button(getContext());
+        shareButton.setText("Share!");
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "shop item");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "bananas");
+                bundle.putString(FirebaseAnalytics.Param.METHOD, "facebook");
+
+                FirebaseAnalytics.getInstance(getActivity()).logEvent(FirebaseAnalytics.Event.SHARE, bundle);
+            }
+        });
+
+
+        LinearLayout layout = (LinearLayout) view;
+        layout.addView(crashButton, 0);
+        layout.addView(purchaseButton, 0);
+        layout.addView(shareButton, 0);
+
+
+        final int random = new Random().nextInt(7);
+
+        for(int i = 0; i<random;i++){
+            SystemClock.sleep(1000);
+            if(i%2==0){
+                purchaseButton.performClick();
+            }else{
+                shareButton.performClick();
+            }
+        }
     }
 
     @Override

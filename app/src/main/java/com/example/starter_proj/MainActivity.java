@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.fullstory.FSSessionData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
 
     private BottomNavigationView mBottomNavView;
     FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private int id;
 
     @Override
     public void onReady(FSSessionData sessionData) {
@@ -60,10 +63,11 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
 
         FirebaseCrashlytics instance = FirebaseCrashlytics.getInstance();
         Map<String, String> userVar = new HashMap<>();
-        userVar.put("userID", "testuser3");
-        userVar.put("displayName","crashlytics user3");
+
+        userVar.put("userID", "testuser"+id);
+        userVar.put("displayName","crashlytics user"+id);
         userVar.put("crashlyticsURL","https://console.firebase.google.com/u/0/project/fs-crashlytics/crashlytics/app/android:com.example.helloworld_java/search?time=last-ninety-days&type=crash&q="+userVar.get("userID"));
-        userVar.put("email","testeamil@gmail.com");
+        userVar.put("email","testeamil"+id+"@gmail.com");
         //send userVar to FS
         FS.identify(userVar.get("userID"),userVar);
 
@@ -74,10 +78,13 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
         //send selected userVar fields to FB
         instance.setCustomKey("FSSessionURL", userVar.get("FSSessionURL") );
         instance.setCustomKey("FSUserSearchURL", userVar.get("FSUserSearchURL"));
-        instance.setCustomKey("FSAllCrashesURL", userVar.get("FSAllCrashesURL"));
+//        instance.setCustomKey("FSAllCrashesURL", userVar.get("FSAllCrashesURL"));
 //        instance.log(sessionData.getCurrentSessionURL());
         instance.setUserId(userVar.get("userID"));
 
+        FirebaseAnalytics.getInstance(getApplicationContext()).setUserId(userVar.get("userID"));
+
+        Log.d("mainactivity",id+userVar.get("userID"));
 
         String fsCustomEventTag = "CrashlyticLog";
         String logMsg = "Higgs-Boson detected! Bailing out";
@@ -110,12 +117,12 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
                             if (task.isSuccessful()) {
                                 boolean updated = task.getResult();
                                 Log.d("firebase", "Config params updated: " + mFirebaseRemoteConfig.getString("new"));
-                                Log.d("firebase", "Config params updated: " + mFirebaseRemoteConfig.getString("churnRisk"));
+//                                Log.d("firebase", "Config params updated: " + mFirebaseRemoteConfig.getString("churnRisk"));
 //                                Toast.makeText(MainActivity.this, "Fetch and activate succeeded",
 //                                        Toast.LENGTH_SHORT).show();
                                 HashMap<String,String> hm = new HashMap<>();
                                 hm.put("new",mFirebaseRemoteConfig.getString("new"));
-                                hm.put("churnRisk",mFirebaseRemoteConfig.getString("churnRisk"));
+//                                hm.put("churnRisk",mFirebaseRemoteConfig.getString("churnRisk"));
                                 FS.event("FirebaseRemoteConfig",hm);
                             } else {
                                 Toast.makeText(MainActivity.this, "Fetch failed",
@@ -137,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
         final Fragment cartFragment = new CartFragment();
         final Fragment checkoutFragment = new CheckoutFragment();
 
-        loadFragment(marketFragment);//default fragment to market
 
         mBottomNavView = (BottomNavigationView) findViewById(R.id.navigation);
 //        FS.addClass(mBottomNavView,FS.UNMASK_CLASS);
@@ -169,8 +175,21 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
         FS.addClass(findViewById(R.id.fragment_container),FS.UNMASK_CLASS);
         FS.addClass(mBottomNavView,FS.UNMASK_CLASS);
 
-    }
 
+        SharedPreferences sharedPref_userID = this.getSharedPreferences("userID", Context.MODE_PRIVATE);
+        int defaultValue = 1;
+        id = sharedPref_userID.getInt("userID", defaultValue);
+
+        if(id>50) id=0;
+
+        SharedPreferences.Editor editor = sharedPref_userID.edit();
+        editor.putInt("userID", ++id);
+        editor.commit();
+
+        loadFragment(cartFragment);//default fragment to market
+
+
+    }
 
     private boolean loadFragment(Fragment fragment) {
         if(mFirebaseRemoteConfig!=null) {
