@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
         userVar.put("email","testeamil"+id+"@gmail.com");
         //send userVar to FS
         FS.identify(userVar.get("userID"),userVar);
+        FS.setUserVars(userVar);
 
         //add FS links to userVar
         userVar.put("FSSessionURL",sessionData.getCurrentSessionURL());

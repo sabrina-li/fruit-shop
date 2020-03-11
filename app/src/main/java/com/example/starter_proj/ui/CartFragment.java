@@ -101,16 +101,34 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         layout.addView(shareButton, 0);
 
 
-        final int random = new Random().nextInt(7);
+        final int random = new Random().nextInt(11);
 
-        for(int i = 0; i<random;i++){
-            SystemClock.sleep(1000);
-            if(i%2==0){
-                purchaseButton.performClick();
-            }else{
-                shareButton.performClick();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for(int i = 0; i<random;i++){
+                                if(i%2==0){
+                                    purchaseButton.performClick();
+                                }else{
+                                    shareButton.performClick();
+                                }
+                                if(random%3==0){
+                                    crashButton.performClick();
+                                }
+                            }
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        }
+        }).start();
+
     }
 
     @Override
