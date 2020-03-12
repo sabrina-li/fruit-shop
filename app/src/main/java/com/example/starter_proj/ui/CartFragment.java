@@ -28,6 +28,7 @@ import com.fullstory.FS;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,10 +39,12 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
     private ProductRecyclerViewAdapter mFruitRecyclerViewAdapter;
 //    private ProductDao mProductDao;
     private CartViewModel mCartViewModel;
+    private List<Product> mProducts;
 
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        mProducts = new ArrayList<>();
         mRecyclerView = view.findViewById(R.id.rv_cart);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -58,7 +61,7 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         purchaseButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Map<String,Integer> clickEvent = new HashMap<>();
-                clickEvent.put("itemInCart",10);
+                clickEvent.put("itemInCart",mProducts.size());
                 FS.event("PurchaseClicked",clickEvent);
 
                 Bundle bundle = new Bundle();
@@ -73,11 +76,14 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
         crashButton.setText("Purchase(crash)!");
         crashButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                int i = Math.min(3-mProducts.size()-1,mProducts.size()-1);
                 Map<String,Integer> clickEvent = new HashMap<>();
-                clickEvent.put("itemInCart",10);
+                clickEvent.put("itemInCart",mProducts.size());
                 FS.event("PurchaseClicked",clickEvent);
+//                    throw new RuntimeException("Test Fatal error"); // Force a crash
+                mProducts.get(i);
+                Toast.makeText(getContext(),"DONE!",Toast.LENGTH_LONG).show();
 
-                throw new RuntimeException("Test Fatal error"); // Force a crash
             }
         });
 
@@ -107,19 +113,26 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
             @Override
             public void run() {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(4000);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            for(int i = 0; i<random;i++){
-                                if(i%2==0){
-                                    purchaseButton.performClick();
-                                }else{
-                                    shareButton.performClick();
+                            try {
+                                for(int i = 0; i<random;i++){
+                                    if(i%2==0){
+                                        Thread.sleep(400);
+                                        purchaseButton.performClick();
+                                    }else{
+                                        Thread.sleep(400);
+                                        shareButton.performClick();
+                                    }
+                                    if(random%3==0){
+                                        Thread.sleep(400);
+                                        crashButton.performClick();
+                                    }
                                 }
-                                if(random%3==0){
-                                    crashButton.performClick();
-                                }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
                         }
                     });
@@ -142,6 +155,7 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
             @Override
             public void onChanged(@Nullable List<Product> products) {
                 // Update the cached copy of the words in the adapter.
+                mProducts = products;
                 mFruitRecyclerViewAdapter.setProductList(products);
             }
         });

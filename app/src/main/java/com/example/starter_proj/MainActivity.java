@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
         int defaultValue = 1;
         id = sharedPref_userID.getInt("userID", defaultValue);
 
-        if(id>50) id=0;
+        if(id>48) id=0;
 
         SharedPreferences.Editor editor = sharedPref_userID.edit();
         editor.putInt("userID", ++id);
