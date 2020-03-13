@@ -103,44 +103,44 @@ public class CartFragment extends Fragment implements ProductRecyclerViewAdapter
 
         LinearLayout layout = (LinearLayout) view;
         layout.addView(crashButton, 0);
-        layout.addView(purchaseButton, 0);
-        layout.addView(shareButton, 0);
+//        layout.addView(purchaseButton, 0);
+//        layout.addView(shareButton, 0);
 
 
         final int random = new Random().nextInt(11);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(4000);
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                for(int i = 0; i<random;i++){
-                                    if(i%2==0){
-                                        Thread.sleep(400);
-                                        purchaseButton.performClick();
-                                    }else{
-                                        Thread.sleep(400);
-                                        shareButton.performClick();
-                                    }
-                                    if(random%3==0){
-                                        Thread.sleep(400);
-                                        crashButton.performClick();
-                                    }
-                                }
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(4000);
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                for(int i = 0; i<random;i++){
+//                                    if(i%2==0){
+//                                        Thread.sleep(400);
+//                                        purchaseButton.performClick();
+//                                    }else{
+//                                        Thread.sleep(400);
+//                                        shareButton.performClick();
+//                                    }
+//                                    if(random%3==0){
+//                                        Thread.sleep(400);
+//                                        crashButton.performClick();
+//                                    }
+//                                }
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    });
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
 
     }
 

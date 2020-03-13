@@ -64,9 +64,10 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
         FirebaseCrashlytics instance = FirebaseCrashlytics.getInstance();
         Map<String, String> userVar = new HashMap<>();
 
+        id=100;
         userVar.put("userID", "testuser"+id);
         userVar.put("displayName","crashlytics user"+id);
-        userVar.put("crashlyticsURL","https://console.firebase.google.com/u/0/project/fs-crashlytics/crashlytics/app/android:com.example.helloworld_java/search?time=last-ninety-days&type=crash&q="+userVar.get("userID"));
+        userVar.put("crashlyticsURL","https://console.firebase.google.com/u/0/project/fs-crashlytics/crashlytics/app/android:com.example.starter_proj/search?time=last-ninety-days&type=crash&q="+userVar.get("userID"));
         userVar.put("email","testeamil"+id+"@gmail.com");
         //send userVar to FS
         FS.identify(userVar.get("userID"),userVar);
