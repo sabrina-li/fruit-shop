@@ -29,6 +29,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,7 +65,10 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
         FirebaseCrashlytics instance = FirebaseCrashlytics.getInstance();
         Map<String, String> userVar = new HashMap<>();
 
-        id=100;
+
+//        FS.restart();
+//        FS.anonymize();
+//        id=100;
         userVar.put("userID", "testuser"+id);
         userVar.put("displayName","crashlytics user"+id);
         userVar.put("crashlyticsURL","https://console.firebase.google.com/u/0/project/fs-crashlytics/crashlytics/app/android:com.example.starter_proj/search?time=last-ninety-days&type=crash&q="+userVar.get("userID"));
@@ -90,11 +94,22 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
 
         String fsCustomEventTag = "CrashlyticLog";
         String logMsg = "Higgs-Boson detected! Bailing out";
-        Map<String, String> eventVars = new HashMap<>();
-        eventVars.put("logMessage", logMsg);
+
+        Map<String, Object> eventProperties = new HashMap<String, Object>() {
+            {
+                put("uid", "750948353");
+                put("planName", "Professional");
+                put("planPrice", 299);
+                put("planUsers", 10);
+                put("daysInTrial", 42);
+                put("featurePacks", new String[]{"MAPS", "DEV", "DATA"});
+            }
+        };
+        FS.event("Subscribed",eventProperties);
+
 
         //send FS even or log to be shown in the playback
-        FS.event(fsCustomEventTag,eventVars);
+
         FS.log(FS.LogLevel.INFO, logMsg);
 
         //Crashlytics:
@@ -140,11 +155,14 @@ public class MainActivity extends AppCompatActivity implements FSOnReadyListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("here",String.valueOf(FS.getCurrentSessionURL()));
         FS.setReadyListener(this);
 
         final Fragment marketFragment = new MarketFragment();
         final Fragment cartFragment = new CartFragment();
         final Fragment checkoutFragment = new CheckoutFragment();
+
+
 
 
         mBottomNavView = (BottomNavigationView) findViewById(R.id.navigation);
